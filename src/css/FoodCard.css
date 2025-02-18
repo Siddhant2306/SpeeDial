@@ -1,0 +1,51 @@
+/* Centering the cards */
+.food-container {
+    display: flex;
+    justify-content: space-evenly; /* Less space between cards */
+    align-items: center;
+    gap: 20px; /* Reduced gap between cards */
+    margin-top: 200px; /* Adjusted margin to lower them a bit more */
+    width: 80%; /* Keep it at 80% width to avoid stretching */
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Card Styling */
+.food-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    text-align: center;
+    width: 250px;
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.food-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* Image Styling */
+.food-img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Button Styling */
+.buy-btn {
+    background: #f39c12;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s ease-in-out;
+}
+
+.buy-btn:hover {
+    background: #e67e22;
+}

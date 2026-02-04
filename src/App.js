@@ -1,15 +1,36 @@
-import logo from './logo.svg';
-import './App.css';
-import NavBar from './components/NavBar';
-import FoodCards from './components/FoodCard';
+import "./App.css";
+import NavBar from "./components/NavBar";
+import FoodCards from "./components/FoodCard";
+import LoginPage from "./pages/LoginPage";
+import FloatingLoginButton from "./components/FloatingLoginButton";
 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
-    <div>
-      <FoodCards />
-      <NavBar />
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <div>
+              <FoodCards />
+              <NavBar />
+              <FloatingLoginButton />
+            </div>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <div>
+              <LoginPage />
+              <FloatingLoginButton />
+            </div>
+          }
+        />
+      </Routes>
+    </BrowserRouter>
   );
 }
 

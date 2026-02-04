@@ -6,6 +6,17 @@
   overflow: hidden;
 }
 
+/* Make the hero feel premium in both themes */
+.home::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 10% 15%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 45%),
+    radial-gradient(circle at 90% 10%, color-mix(in srgb, var(--accent-2) 14%, transparent), transparent 40%);
+  pointer-events: none;
+}
+
 .home-overlay {
   position: absolute;
   inset: 0;
@@ -30,9 +41,9 @@
   border-radius: 999px;
   background: rgba(255,255,255,0.12);
   border: 1px solid rgba(255,255,255,0.18);
-  backdrop-filter: blur(6px);
-  font-weight: 700;
-  letter-spacing: 0.5px;
+  backdrop-filter: blur(8px);
+  font-weight: 800;
+  letter-spacing: 0.6px;
 }
 
 .title {

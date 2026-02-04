@@ -3,27 +3,91 @@
 .shop {
   padding-top: 110px; /* navbar space */
   min-height: 100vh;
-  background: linear-gradient(180deg, #f6f7fb, #ffffff);
+  background:
+    radial-gradient(circle at 10% 10%, rgba(243,156,18,0.12), transparent 45%),
+    radial-gradient(circle at 90% 20%, rgba(0,209,255,0.10), transparent 40%),
+    linear-gradient(180deg, #f6f7fb, #ffffff);
 }
 
 .shop-inner {
   width: min(1100px, 92%);
   margin: 0 auto;
-  padding-bottom: 60px;
+  padding-bottom: 80px;
+}
+
+.shop-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.75);
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+  backdrop-filter: blur(6px);
+}
+
+.shop-pill {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(17,17,17,0.06);
+  color: #111;
+  font-weight: 800;
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
 }
 
 .shop-title {
-  margin: 0;
-  font-size: 32px;
+  margin: 10px 0 6px;
+  font-size: 38px;
+  letter-spacing: -0.4px;
 }
 
 .shop-subtitle {
-  margin: 6px 0 22px;
+  margin: 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+.shop-hero-right {
+  display: flex;
+  align-items: center;
+}
+
+.shop-mini-stat {
+  min-width: 130px;
+  text-align: right;
+}
+
+.ms-num {
+  font-size: 28px;
+  font-weight: 900;
+  color: #111;
+}
+
+.ms-label {
   color: #666;
+  font-weight: 700;
+  font-size: 12px;
 }
 
 .section-title {
-  margin: 24px 0 12px;
+  margin: 26px 0 12px;
+  font-size: 18px;
+  letter-spacing: -0.2px;
+}
+
+.section-title::after {
+  content: "";
+  display: block;
+  width: 54px;
+  height: 4px;
+  margin-top: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #f39c12, rgba(243,156,18,0.2));
 }
 
 .grid {
@@ -32,8 +96,52 @@
   gap: 18px;
 }
 
+/* Card polish (override FoodCard.css for Shop layout) */
+.shop .food-card {
+  width: auto;
+  text-align: left;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 14px 30px rgba(0,0,0,0.10);
+}
+
+.shop .food-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 44px rgba(0,0,0,0.16);
+}
+
+.shop .food-img {
+  height: 160px;
+}
+
+.shop .food-card h3 {
+  margin: 12px 0 6px;
+}
+
+.shop .food-card p {
+  margin: 0 0 12px;
+  color: #666;
+}
+
+.shop .buy-btn {
+  width: 100%;
+  border-radius: 12px;
+  font-weight: 800;
+}
+
+.shop .qty-control {
+  justify-content: flex-start;
+}
+
 @media (max-width: 950px) {
   .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 700px) {
+  .shop-hero {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .shop-mini-stat { text-align: left; }
 }
 
 @media (max-width: 600px) {
@@ -47,14 +155,20 @@
   bottom: 18px;
   z-index: 9999;
 
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+  width: 58px;
+  height: 58px;
+  border-radius: 18px;
   border: none;
-  background: #111;
+  background: linear-gradient(180deg, #111, #000);
   color: white;
   cursor: pointer;
-  box-shadow: 0 12px 24px rgba(0,0,0,0.25);
+  box-shadow: 0 14px 28px rgba(0,0,0,0.28);
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.floating-cart:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
 }
 
 .cart-icon {

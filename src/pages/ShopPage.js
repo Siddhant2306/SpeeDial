@@ -118,8 +118,21 @@ const ShopPage = () => {
   return (
     <div className="shop">
       <div className="shop-inner">
-        <h2 className="shop-title">Shop</h2>
-        <p className="shop-subtitle">Pick items, add to cart, then place one order.</p>
+        <div className="shop-hero">
+          <div>
+            <div className="shop-pill">SpeeDial • Shop</div>
+            <h2 className="shop-title">Grab your favorites</h2>
+            <p className="shop-subtitle">
+              Pick items, add to cart, then place one order.
+            </p>
+          </div>
+          <div className="shop-hero-right">
+            <div className="shop-mini-stat">
+              <div className="ms-num">{cartCount}</div>
+              <div className="ms-label">items in cart</div>
+            </div>
+          </div>
+        </div>
 
         <h3 className="section-title">Snacks</h3>
         <div className="grid">

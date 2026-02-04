@@ -1,13 +1,21 @@
-/* Centering the cards */
+/* Layout */
 .food-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 22px;
+    margin-top: 200px;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.food-row {
     display: flex;
     justify-content: space-evenly; /* Less space between cards */
     align-items: center;
     gap: 20px; /* Reduced gap between cards */
-    margin-top: 200px; /* Adjusted margin to lower them a bit more */
-    width: 80%; /* Keep it at 80% width to avoid stretching */
-    margin-left: auto;
-    margin-right: auto;
+    width: 100%;
 }
 
 /* Card Styling */
@@ -72,4 +80,13 @@
 .qty-control span {
   font-size: 16px;
   font-weight: 600;
+}
+
+.cart-card {
+  width: 520px;
+  max-width: 100%;
+}
+
+.cart-lines {
+  line-height: 1.6;
 }

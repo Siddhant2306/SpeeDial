@@ -25,45 +25,55 @@ const FoodCards = () => {
     }
   };
 
+  const checkout = async () => {
+    // Place two orders (one per item). If your backend supports a combined cart,
+    // we can change this to send a single payload.
+    await placeOrder("snack", snackQty);
+    await placeOrder("drink", drinkQty);
+  };
+
   return (
     <div className="food-container">
-      {/* Snack Card */}
-      <div className="food-card">
-        <img src={snackImage} alt="Snack" className="food-img" />
-        <h3>Delicious Snacks</h3>
-        <p>Enjoy crispy and tasty snacks to satisfy your cravings!</p>
+      <div className="food-row">
+        {/* Snack Card */}
+        <div className="food-card">
+          <img src={snackImage} alt="Snack" className="food-img" />
+          <h3>Delicious Snacks</h3>
+          <p>Enjoy crispy and tasty snacks to satisfy your cravings!</p>
 
-        <div className="qty-control">
-          <button onClick={() => setSnackQty(q => Math.max(1, q - 1))}>−</button>
-          <span>{snackQty}</span>
-          <button onClick={() => setSnackQty(q => q + 1)}>+</button>
+          <div className="qty-control">
+            <button onClick={() => setSnackQty((q) => Math.max(1, q - 1))}>-</button>
+            <span>{snackQty}</span>
+            <button onClick={() => setSnackQty((q) => q + 1)}>+</button>
+          </div>
         </div>
 
-        <button
-          className="buy-btn"
-          onClick={() => placeOrder("Snacks", snackQty)}
-        >
-          Order Snacks
-        </button>
+        {/* Drink Card */}
+        <div className="food-card">
+          <img src={drinkImage} alt="Drink" className="food-img" />
+          <h3>Refreshing Drinks</h3>
+          <p>Stay refreshed with our amazing collection of drinks.</p>
+
+          <div className="qty-control">
+            <button onClick={() => setDrinkQty((q) => Math.max(1, q - 1))}>-</button>
+            <span>{drinkQty}</span>
+            <button onClick={() => setDrinkQty((q) => q + 1)}>+</button>
+          </div>
+        </div>
       </div>
 
-      {/* Drink Card */}
-      <div className="food-card">
-        <img src={drinkImage} alt="Drink" className="food-img" />
-        <h3>Refreshing Drinks</h3>
-        <p>Stay refreshed with our amazing collection of drinks.</p>
+      {/* Cart Card (below) */}
+      <div className="food-card cart-card">
+        <img src={drinkImage} alt="Cart" className="food-img" />
+        <h3>Cart</h3>
+        <p className="cart-lines">
+          Snacks: <b>{snackQty}</b>
+          <br />
+          Drinks: <b>{drinkQty}</b>
+        </p>
 
-        <div className="qty-control">
-          <button onClick={() => setDrinkQty(q => Math.max(1, q - 1))}>−</button>
-          <span>{drinkQty}</span>
-          <button onClick={() => setDrinkQty(q => q + 1)}>+</button>
-        </div>
-
-        <button
-          className="buy-btn"
-          onClick={() => placeOrder("Drinks", drinkQty)}
-        >
-          Order Drinks
+        <button className="buy-btn" onClick={checkout}>
+          Checkout
         </button>
       </div>
     </div>

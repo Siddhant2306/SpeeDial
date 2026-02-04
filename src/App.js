@@ -1,7 +1,8 @@
 import "./App.css";
 import NavBar from "./components/NavBar";
-import FoodCards from "./components/FoodCard";
 import LoginPage from "./pages/LoginPage";
+import HomePage from "./pages/HomePage";
+import ShopPage from "./pages/ShopPage";
 import FloatingLoginButton from "./components/FloatingLoginButton";
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -9,17 +10,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
   return (
     <BrowserRouter>
+      <NavBar />
       <Routes>
-        <Route
-          path="/"
-          element={
-            <div>
-              <FoodCards />
-              <NavBar />
-              <FloatingLoginButton />
-            </div>
-          }
-        />
+        <Route path="/" element={<HomePage />} />
+        <Route path="/shop" element={<ShopPage />} />
         <Route
           path="/login"
           element={

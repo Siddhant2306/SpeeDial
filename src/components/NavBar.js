@@ -14,10 +14,10 @@ const NavBar = () => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="/about">About</a>
+            <Link to="/shop">Shop</Link>
           </li>
           <li>
-            <a href="/shop">Shop</a>
+            <Link to="/login">Login</Link>
           </li>
         </ul>
       </nav>

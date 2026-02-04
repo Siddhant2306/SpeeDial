@@ -6,7 +6,7 @@
   background:
     radial-gradient(circle at 10% 10%, rgba(243,156,18,0.12), transparent 45%),
     radial-gradient(circle at 90% 20%, rgba(0,209,255,0.10), transparent 40%),
-    linear-gradient(180deg, #f6f7fb, #ffffff);
+    linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 30%, white));
 }
 
 .shop-inner {
@@ -22,9 +22,9 @@
   gap: 12px;
   padding: 18px;
   border-radius: 18px;
-  background: rgba(255,255,255,0.75);
-  border: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
   backdrop-filter: blur(6px);
 }
 
@@ -48,7 +48,7 @@
 
 .shop-subtitle {
   margin: 0;
-  color: #555;
+  color: var(--muted);
   line-height: 1.5;
 }
 
@@ -182,7 +182,7 @@
   width: 22px;
   height: 22px;
   border-radius: 999px;
-  background: #f39c12;
+  background: var(--accent);
   color: #111;
   font-size: 12px;
   font-weight: 800;
@@ -207,10 +207,12 @@
   width: min(420px, 100%);
   max-height: 70vh;
   overflow: auto;
-  background: white;
+  background: var(--surface-solid);
+  color: var(--text);
   border-radius: 16px;
   padding: 16px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   animation: slideUp 220ms ease-out;
 }
 
@@ -251,9 +253,10 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #eee;
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 10px;
+  background: color-mix(in srgb, var(--surface-solid) 92%, transparent);
 }
 
 .cart-name { font-weight: 800; }

@@ -4,15 +4,17 @@
   align-items: center;
   justify-content: center;
   padding: 24px;
-  background: #f6f7fb;
+  background: var(--bg);
 }
 
 .login-card {
   width: 420px;
   max-width: 100%;
-  background: white;
+  background: var(--surface-solid);
+  color: var(--text);
   border-radius: 16px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   padding: 22px;
 }
 

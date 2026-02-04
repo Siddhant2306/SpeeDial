@@ -1,7 +1,31 @@
 import React, { useMemo, useState } from "react";
 import "../css/shop.css";
-import snackImage from "../assets/Screenshot 2025-02-18 072332.png";
-import drinkImage from "../assets/Screenshot 2025-02-18 072458.png";
+
+const makeSvgDataUri = ({ bg1, bg2, title, emoji }) => {
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="800">
+    <defs>
+      <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="${bg1}"/>
+        <stop offset="1" stop-color="${bg2}"/>
+      </linearGradient>
+      <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+        <feDropShadow dx="0" dy="18" stdDeviation="25" flood-color="#000" flood-opacity="0.35" />
+      </filter>
+    </defs>
+    <rect width="1200" height="800" fill="url(#g)"/>
+    <circle cx="980" cy="220" r="220" fill="rgba(255,255,255,0.20)"/>
+    <circle cx="260" cy="640" r="260" fill="rgba(0,0,0,0.08)"/>
+    <g filter="url(#s)">
+      <rect x="90" y="120" width="1020" height="560" rx="44" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.22)" />
+    </g>
+    <text x="150" y="330" font-size="120" font-family="Inter, Arial" fill="rgba(255,255,255,0.96)">${emoji}</text>
+    <text x="150" y="440" font-size="72" font-weight="800" font-family="Inter, Arial" fill="rgba(255,255,255,0.96)">${title}</text>
+    <text x="150" y="520" font-size="34" font-weight="700" font-family="Inter, Arial" fill="rgba(255,255,255,0.86)">SpeeDial</text>
+  </svg>`;
+
+  return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+};
 
 const PRODUCTS = [
   // Snacks
@@ -10,21 +34,21 @@ const PRODUCTS = [
     name: "Classic Chips",
     desc: "Crispy salted chips for the perfect crunch.",
     type: "snack",
-    image: snackImage,
+    image: makeSvgDataUri({ bg1: "#ffb703", bg2: "#fb8500", title: "Chips", emoji: "🥔" }),
   },
   {
     id: "nachos",
     name: "Cheesy Nachos",
     desc: "Loaded nachos with a cheesy kick.",
     type: "snack",
-    image: snackImage,
+    image: makeSvgDataUri({ bg1: "#f72585", bg2: "#7209b7", title: "Nachos", emoji: "🧀" }),
   },
   {
     id: "cookies",
     name: "Choco Cookies",
     desc: "Soft cookies with chocolate chunks.",
     type: "snack",
-    image: snackImage,
+    image: makeSvgDataUri({ bg1: "#b08968", bg2: "#7f5539", title: "Cookies", emoji: "🍪" }),
   },
 
   // Drinks
@@ -33,21 +57,21 @@ const PRODUCTS = [
     name: "Cola",
     desc: "Ice-cold fizzy refreshment.",
     type: "drink",
-    image: drinkImage,
+    image: makeSvgDataUri({ bg1: "#111827", bg2: "#ef4444", title: "Cola", emoji: "🥤" }),
   },
   {
     id: "lemonade",
     name: "Lemonade",
     desc: "Fresh and tangy.",
     type: "drink",
-    image: drinkImage,
+    image: makeSvgDataUri({ bg1: "#34d399", bg2: "#f59e0b", title: "Lemonade", emoji: "🍋" }),
   },
   {
     id: "iced-tea",
     name: "Iced Tea",
     desc: "Sweet, chilled, and smooth.",
     type: "drink",
-    image: drinkImage,
+    image: makeSvgDataUri({ bg1: "#06b6d4", bg2: "#2563eb", title: "Iced Tea", emoji: "🧊" }),
   },
 ];
 

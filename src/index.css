@@ -1,9 +1,33 @@
+/* Theme tokens */
+:root {
+  --bg: #f6f7fb;
+  --surface: rgba(255, 255, 255, 0.82);
+  --surface-solid: #ffffff;
+  --text: #111111;
+  --muted: #555555;
+  --border: rgba(0, 0, 0, 0.10);
+  --shadow: 0 16px 40px rgba(0,0,0,0.10);
+  --accent: #f39c12;
+  --accent-2: #00d1ff;
+}
+
+[data-theme="dark"] {
+  --bg: #07090f;
+  --surface: rgba(17, 19, 28, 0.78);
+  --surface-solid: #0f1220;
+  --text: #f5f7ff;
+  --muted: rgba(245, 247, 255, 0.72);
+  --border: rgba(255, 255, 255, 0.12);
+  --shadow: 0 18px 48px rgba(0,0,0,0.55);
+  --accent: #f39c12;
+  --accent-2: #00d1ff;
+}
+
 body {
   margin: 0;
-  background: url('./assets/background1.png');
-  background-size: cover;
-  background-position: center;
   min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -12,8 +36,7 @@ body {
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
 *{
@@ -25,5 +48,5 @@ code {
 
 a{
   text-decoration: none;
-  
+  color: inherit;
 }

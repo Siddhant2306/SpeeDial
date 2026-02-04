@@ -58,6 +58,14 @@
     background: #e67e22;
 }
 
+.buy-btn.secondary {
+  background: #333;
+}
+
+.buy-btn.secondary:hover {
+  background: #111;
+}
+
 .qty-control {
   display: flex;
   align-items: center;
@@ -89,4 +97,11 @@
 
 .cart-lines {
   line-height: 1.6;
+}
+
+.cart-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
 }

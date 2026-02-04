@@ -58,17 +58,57 @@ with app.app_context():
 # --------------------
 @app.route("/order", methods=["POST"])
 def place_order():
-    data = request.get_json()
+    data = request.get_json() or {}
 
-    if not data or "item" not in data:
+    if "item" not in data:
         return jsonify({"error": "Item is required"}), 400
 
-    new_order = Order(item=data["item"], quantity=data.get("quantity", 1))
+    qty = int(data.get("quantity", 1))
+    if qty < 1:
+        return jsonify({"error": "quantity must be >= 1"}), 400
+
+    new_order = Order(item=data["item"], quantity=qty)
 
     db.session.add(new_order)
     db.session.commit()
 
     return jsonify({"message": "Order placed", "order_id": new_order.id}), 201
+
+
+@app.route("/orders/bulk", methods=["POST"])
+def place_bulk_orders():
+    """Accepts: { items: [ {item: "snack", quantity: 2}, ... ] } and creates 1 row per item."""
+    data = request.get_json() or {}
+    items = data.get("items") or []
+
+    if not isinstance(items, list) or len(items) == 0:
+        return jsonify({"error": "items must be a non-empty list"}), 400
+
+    created_ids = []
+    for it in items:
+        if not isinstance(it, dict):
+            return jsonify({"error": "each item must be an object"}), 400
+
+        name = it.get("item")
+        qty = it.get("quantity", 1)
+        try:
+            qty = int(qty)
+        except Exception:
+            return jsonify({"error": "quantity must be a number"}), 400
+
+        if not name:
+            return jsonify({"error": "item is required"}), 400
+        if qty < 1:
+            return jsonify({"error": "quantity must be >= 1"}), 400
+
+        order = Order(item=name, quantity=qty)
+        db.session.add(order)
+        db.session.flush()  # get id without full commit
+        created_ids.append(order.id)
+
+    db.session.commit()
+
+    return jsonify({"message": "orders placed", "order_ids": created_ids}), 201
 
 
 # --------------------

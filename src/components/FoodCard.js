@@ -1,35 +1,53 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import "../css/FoodCard.css";
 import snackImage from "../assets/Screenshot 2025-02-18 072332.png";
 import drinkImage from "../assets/Screenshot 2025-02-18 072458.png";
 
 const FoodCards = () => {
+  // picker quantities (how many you want to add *this time*)
   const [snackQty, setSnackQty] = useState(1);
   const [drinkQty, setDrinkQty] = useState(1);
 
-  const placeOrder = async (item, quantity) => {
+  // cart quantities (what’s currently in the cart)
+  const [cart, setCart] = useState({ snack: 0, drink: 0 });
+
+  const totalItems = useMemo(() => cart.snack + cart.drink, [cart]);
+
+  const addToCart = (item, quantity) => {
+    setCart((c) => ({
+      ...c,
+      [item]: (c[item] || 0) + quantity,
+    }));
+  };
+
+  const clearCart = () => setCart({ snack: 0, drink: 0 });
+
+  const checkout = async () => {
     try {
-      const res = await fetch("http://localhost:8080/order", {
+      const items = [];
+      if (cart.snack > 0) items.push({ item: "snack", quantity: cart.snack });
+      if (cart.drink > 0) items.push({ item: "drink", quantity: cart.drink });
+
+      if (items.length === 0) {
+        alert("🛒 Cart is empty");
+        return;
+      }
+
+      const res = await fetch("http://localhost:8080/orders/bulk", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ item, quantity }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ items }),
       });
 
       const data = await res.json();
-      alert(`✅ Order placed! Order ID: ${data.order_id}`);
+      if (!res.ok) throw new Error(data?.error || "Checkout failed");
+
+      alert(`✅ Order placed! Order IDs: ${(data.order_ids || []).join(", ")}`);
+      clearCart();
     } catch (err) {
-      alert("❌ Failed to place order");
+      alert(`❌ ${err.message}`);
       console.error(err);
     }
-  };
-
-  const checkout = async () => {
-    // Place two orders (one per item). If your backend supports a combined cart,
-    // we can change this to send a single payload.
-    await placeOrder("snack", snackQty);
-    await placeOrder("drink", drinkQty);
   };
 
   return (
@@ -46,6 +64,10 @@ const FoodCards = () => {
             <span>{snackQty}</span>
             <button onClick={() => setSnackQty((q) => q + 1)}>+</button>
           </div>
+
+          <button className="buy-btn" onClick={() => addToCart("snack", snackQty)}>
+            Add to cart
+          </button>
         </div>
 
         {/* Drink Card */}
@@ -59,6 +81,10 @@ const FoodCards = () => {
             <span>{drinkQty}</span>
             <button onClick={() => setDrinkQty((q) => q + 1)}>+</button>
           </div>
+
+          <button className="buy-btn" onClick={() => addToCart("drink", drinkQty)}>
+            Add to cart
+          </button>
         </div>
       </div>
 
@@ -67,14 +93,21 @@ const FoodCards = () => {
         <img src={drinkImage} alt="Cart" className="food-img" />
         <h3>Cart</h3>
         <p className="cart-lines">
-          Snacks: <b>{snackQty}</b>
+          Snacks: <b>{cart.snack}</b>
           <br />
-          Drinks: <b>{drinkQty}</b>
+          Drinks: <b>{cart.drink}</b>
+          <br />
+          Total items: <b>{totalItems}</b>
         </p>
 
-        <button className="buy-btn" onClick={checkout}>
-          Checkout
-        </button>
+        <div className="cart-actions">
+          <button className="buy-btn" onClick={checkout}>
+            Order now
+          </button>
+          <button className="buy-btn secondary" onClick={clearCart}>
+            Clear
+          </button>
+        </div>
       </div>
     </div>
   );

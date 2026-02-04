@@ -7,7 +7,7 @@
   padding: 0 12px;
   border-radius: 999px;
   border: 1px solid var(--border);
-  background: var(--surface);
+  background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--surface) 80%, transparent));
   color: var(--text);
   cursor: pointer;
   font-weight: 800;

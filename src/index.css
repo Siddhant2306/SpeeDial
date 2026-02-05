@@ -1,14 +1,15 @@
 /* Theme tokens */
 :root {
-  --bg: #f6f7fb;
+  /* Light theme (still neon, but on a light background) */
+  --bg: #f7f8ff;
   --surface: rgba(255, 255, 255, 0.82);
   --surface-solid: #ffffff;
-  --text: #111111;
-  --muted: #555555;
-  --border: rgba(0, 0, 0, 0.10);
-  --shadow: 0 16px 40px rgba(0,0,0,0.10);
-  --accent: #f39c12;
-  --accent-2: #00d1ff;
+  --text: #0b1020;
+  --muted: rgba(11, 16, 32, 0.68);
+  --border: rgba(11, 16, 32, 0.12);
+  --shadow: 0 16px 50px rgba(0,0,0,0.10);
+  --accent: #8b5cf6;   /* neon violet */
+  --accent-2: #22d3ee; /* neon cyan */
 }
 
 [data-theme="dark"] {

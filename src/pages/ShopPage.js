@@ -10,37 +10,73 @@ const makeSvgDataUri = ({ bg1, bg2, title, emoji }) => {
         <stop offset="1" stop-color="${bg2}"/>
       </linearGradient>
       <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
-        <feDropShadow dx="0" dy="18" stdDeviation="25" flood-color="#000" flood-opacity="0.35" />
+        <feDropShadow dx="0" dy="18" stdDeviation="25" flood-color="#000" flood-opacity="0.45" />
       </filter>
     </defs>
     <rect width="1200" height="800" fill="url(#g)"/>
-    <circle cx="980" cy="220" r="220" fill="rgba(255,255,255,0.20)"/>
-    <circle cx="260" cy="640" r="260" fill="rgba(0,0,0,0.08)"/>
+    <circle cx="980" cy="220" r="220" fill="rgba(255,255,255,0.18)"/>
+    <circle cx="260" cy="640" r="260" fill="rgba(0,0,0,0.10)"/>
     <g filter="url(#s)">
-      <rect x="90" y="120" width="1020" height="560" rx="44" fill="rgba(255,255,255,0.16)" stroke="rgba(255,255,255,0.22)" />
+      <rect x="90" y="120" width="1020" height="560" rx="44" fill="rgba(255,255,255,0.14)" stroke="rgba(255,255,255,0.20)" />
     </g>
     <text x="150" y="330" font-size="120" font-family="Inter, Arial" fill="rgba(255,255,255,0.96)">${emoji}</text>
-    <text x="150" y="440" font-size="72" font-weight="800" font-family="Inter, Arial" fill="rgba(255,255,255,0.96)">${title}</text>
-    <text x="150" y="520" font-size="34" font-weight="700" font-family="Inter, Arial" fill="rgba(255,255,255,0.86)">SpeeDial</text>
+    <text x="150" y="440" font-size="72" font-weight="900" font-family="Inter, Arial" fill="rgba(255,255,255,0.96)">${title}</text>
+    <text x="150" y="520" font-size="34" font-weight="800" font-family="Inter, Arial" fill="rgba(255,255,255,0.84)">SpeeDial</text>
   </svg>`;
 
   return "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
 };
 
 const PRODUCTS = [
-  // Snacks
+  // Chips (multiple flavors)
   {
-    id: "chips",
-    name: "Classic Chips",
-    desc: "Crispy salted chips for the perfect crunch.",
+    id: "chips-classic-salt",
+    name: "Chips • Classic Salt",
+    desc: "Simple, crispy, and perfectly salted.",
     type: "snack",
-    image: makeSvgDataUri({ bg1: "#ffb703", bg2: "#fb8500", title: "Chips", emoji: "🥔" }),
+    category: "chips",
+    image: makeSvgDataUri({ bg1: "#fbbf24", bg2: "#f97316", title: "Classic", emoji: "🥔" }),
   },
+  {
+    id: "chips-masala",
+    name: "Chips • Masala",
+    desc: "Spicy desi masala punch.",
+    type: "snack",
+    category: "chips",
+    image: makeSvgDataUri({ bg1: "#fb7185", bg2: "#ef4444", title: "Masala", emoji: "🌶️" }),
+  },
+  {
+    id: "chips-bbq",
+    name: "Chips • BBQ",
+    desc: "Smoky BBQ flavor with a crunch.",
+    type: "snack",
+    category: "chips",
+    image: makeSvgDataUri({ bg1: "#a78bfa", bg2: "#8b5cf6", title: "BBQ", emoji: "🔥" }),
+  },
+  {
+    id: "chips-cheese",
+    name: "Chips • Cheese",
+    desc: "Cheesy, creamy, dangerously addictive.",
+    type: "snack",
+    category: "chips",
+    image: makeSvgDataUri({ bg1: "#fde047", bg2: "#f59e0b", title: "Cheese", emoji: "🧀" }),
+  },
+  {
+    id: "chips-sour-cream",
+    name: "Chips • Sour Cream",
+    desc: "Tangy sour cream & onion vibes.",
+    type: "snack",
+    category: "chips",
+    image: makeSvgDataUri({ bg1: "#22d3ee", bg2: "#3b82f6", title: "Sour", emoji: "🧅" }),
+  },
+
+  // Other snacks
   {
     id: "nachos",
     name: "Cheesy Nachos",
     desc: "Loaded nachos with a cheesy kick.",
     type: "snack",
+    category: "snacks",
     image: makeSvgDataUri({ bg1: "#f72585", bg2: "#7209b7", title: "Nachos", emoji: "🧀" }),
   },
   {
@@ -48,6 +84,7 @@ const PRODUCTS = [
     name: "Choco Cookies",
     desc: "Soft cookies with chocolate chunks.",
     type: "snack",
+    category: "snacks",
     image: makeSvgDataUri({ bg1: "#b08968", bg2: "#7f5539", title: "Cookies", emoji: "🍪" }),
   },
 
@@ -57,6 +94,7 @@ const PRODUCTS = [
     name: "Cola",
     desc: "Ice-cold fizzy refreshment.",
     type: "drink",
+    category: "drinks",
     image: makeSvgDataUri({ bg1: "#111827", bg2: "#ef4444", title: "Cola", emoji: "🥤" }),
   },
   {
@@ -64,6 +102,7 @@ const PRODUCTS = [
     name: "Lemonade",
     desc: "Fresh and tangy.",
     type: "drink",
+    category: "drinks",
     image: makeSvgDataUri({ bg1: "#34d399", bg2: "#f59e0b", title: "Lemonade", emoji: "🍋" }),
   },
   {
@@ -71,16 +110,69 @@ const PRODUCTS = [
     name: "Iced Tea",
     desc: "Sweet, chilled, and smooth.",
     type: "drink",
+    category: "drinks",
     image: makeSvgDataUri({ bg1: "#06b6d4", bg2: "#2563eb", title: "Iced Tea", emoji: "🧊" }),
   },
 ];
+
+const QtyControl = ({ value, onDec, onInc }) => {
+  return (
+    <div className="qty-control">
+      <button onClick={onDec}>-</button>
+      <span>{value}</span>
+      <button onClick={onInc}>+</button>
+    </div>
+  );
+};
+
+const ProductCard = ({ p, pickerQty, setPickerQty, addToCart }) => {
+  const qty = pickerQty[p.id] || 1;
+
+  return (
+    <div className="product" key={p.id}>
+      <div className="product-media">
+        <img src={p.image} alt={p.name} />
+      </div>
+
+      <div className="product-body">
+        <div className="product-title">{p.name}</div>
+        <div className="product-desc">{p.desc}</div>
+
+        <div className="product-row">
+          <QtyControl
+            value={qty}
+            onDec={() =>
+              setPickerQty((q) => ({
+                ...q,
+                [p.id]: Math.max(1, (q[p.id] || 1) - 1),
+              }))
+            }
+            onInc={() =>
+              setPickerQty((q) => ({
+                ...q,
+                [p.id]: (q[p.id] || 1) + 1,
+              }))
+            }
+          />
+
+          <button className="neon-btn" onClick={() => addToCart(p.id)}>
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ShopPage = () => {
   const [pickerQty, setPickerQty] = useState(() =>
     Object.fromEntries(PRODUCTS.map((p) => [p.id, 1]))
   );
-  const [cart, setCart] = useState({}); // { productId: qty }
+  const [cart, setCart] = useState({});
   const [cartOpen, setCartOpen] = useState(false);
+
+  const [activeTab, setActiveTab] = useState("all");
+  const [query, setQuery] = useState("");
 
   const cartCount = useMemo(
     () => Object.values(cart).reduce((sum, q) => sum + q, 0),
@@ -131,8 +223,21 @@ const ShopPage = () => {
     }
   };
 
-  const snacks = PRODUCTS.filter((p) => p.type === "snack");
-  const drinks = PRODUCTS.filter((p) => p.type === "drink");
+  const q = query.trim().toLowerCase();
+
+  const filtered = PRODUCTS.filter((p) => {
+    const key = p.category || p.type;
+    const matchesTab = activeTab === "all" ? true : key === activeTab;
+    const matchesQuery =
+      !q ||
+      p.name.toLowerCase().includes(q) ||
+      p.desc.toLowerCase().includes(q);
+    return matchesTab && matchesQuery;
+  });
+
+  const chips = filtered.filter((p) => p.category === "chips");
+  const snacks = filtered.filter((p) => p.type === "snack" && p.category !== "chips");
+  const drinks = filtered.filter((p) => p.type === "drink");
 
   const cartLines = Object.entries(cart).map(([productId, qty]) => {
     const p = PRODUCTS.find((x) => x.id === productId);
@@ -140,110 +245,109 @@ const ShopPage = () => {
   });
 
   return (
-    <div className="shop">
-      <div className="shop-inner">
-        <div className="shop-hero">
+    <div className="shop2">
+      <div className="shop2-inner">
+        <div className="hero2">
           <div>
-            <div className="shop-pill">SpeeDial • Shop</div>
-            <h2 className="shop-title">Grab your favorites</h2>
-            <p className="shop-subtitle">
-              Pick items, add to cart, then place one order.
-            </p>
-          </div>
-          <div className="shop-hero-right">
-            <div className="shop-mini-stat">
-              <div className="ms-num">{cartCount}</div>
-              <div className="ms-label">items in cart</div>
-            </div>
-          </div>
-        </div>
+            <div className="pill2">Dark Neon</div>
+            <div className="hero2-title">SpeeDial Store</div>
+            <div className="hero2-sub">Tap add. Open cart. Place one order.</div>
 
-        <h3 className="section-title">Snacks</h3>
-        <div className="grid">
-          {snacks.map((p) => (
-            <div className="food-card" key={p.id}>
-              <img src={p.image} alt={p.name} className="food-img" />
-              <h3>{p.name}</h3>
-              <p>{p.desc}</p>
-
-              <div className="qty-control">
-                <button
-                  onClick={() =>
-                    setPickerQty((q) => ({
-                      ...q,
-                      [p.id]: Math.max(1, (q[p.id] || 1) - 1),
-                    }))
-                  }
-                >
-                  -
-                </button>
-                <span>{pickerQty[p.id] || 1}</span>
-                <button
-                  onClick={() =>
-                    setPickerQty((q) => ({
-                      ...q,
-                      [p.id]: (q[p.id] || 1) + 1,
-                    }))
-                  }
-                >
-                  +
-                </button>
+            <div className="controls2">
+              <div className="tabs2">
+                {[
+                  { id: "all", label: "All" },
+                  { id: "chips", label: "Chips" },
+                  { id: "snacks", label: "Snacks" },
+                  { id: "drinks", label: "Drinks" },
+                ].map((t) => (
+                  <button
+                    key={t.id}
+                    className={"tab2 " + (activeTab === t.id ? "active" : "")}
+                    onClick={() => setActiveTab(t.id)}
+                  >
+                    {t.label}
+                  </button>
+                ))}
               </div>
 
-              <button className="buy-btn" onClick={() => addToCart(p.id)}>
-                Add to cart
-              </button>
-            </div>
-          ))}
-        </div>
-
-        <h3 className="section-title">Drinks</h3>
-        <div className="grid">
-          {drinks.map((p) => (
-            <div className="food-card" key={p.id}>
-              <img src={p.image} alt={p.name} className="food-img" />
-              <h3>{p.name}</h3>
-              <p>{p.desc}</p>
-
-              <div className="qty-control">
-                <button
-                  onClick={() =>
-                    setPickerQty((q) => ({
-                      ...q,
-                      [p.id]: Math.max(1, (q[p.id] || 1) - 1),
-                    }))
-                  }
-                >
-                  -
-                </button>
-                <span>{pickerQty[p.id] || 1}</span>
-                <button
-                  onClick={() =>
-                    setPickerQty((q) => ({
-                      ...q,
-                      [p.id]: (q[p.id] || 1) + 1,
-                    }))
-                  }
-                >
-                  +
-                </button>
+              <div className="search2">
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder="Search… (masala, cola, chips)"
+                />
               </div>
-
-              <button className="buy-btn" onClick={() => addToCart(p.id)}>
-                Add to cart
-              </button>
             </div>
-          ))}
+          </div>
+
+          <div className="stat2">
+            <div className="stat2-num">{cartCount}</div>
+            <div className="stat2-label">in cart</div>
+          </div>
         </div>
+
+        {chips.length > 0 && (
+          <>
+            <div className="section2">Chips</div>
+            <div className="grid2">
+              {chips.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  p={p}
+                  pickerQty={pickerQty}
+                  setPickerQty={setPickerQty}
+                  addToCart={addToCart}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {snacks.length > 0 && (
+          <>
+            <div className="section2">Snacks</div>
+            <div className="grid2">
+              {snacks.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  p={p}
+                  pickerQty={pickerQty}
+                  setPickerQty={setPickerQty}
+                  addToCart={addToCart}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {drinks.length > 0 && (
+          <>
+            <div className="section2">Drinks</div>
+            <div className="grid2">
+              {drinks.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  p={p}
+                  pickerQty={pickerQty}
+                  setPickerQty={setPickerQty}
+                  addToCart={addToCart}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {chips.length === 0 && snacks.length === 0 && drinks.length === 0 && (
+          <div className="empty2">No items match your search.</div>
+        )}
       </div>
 
-      {/* Floating Cart Icon (bottom-right) */}
-      <button className="floating-cart" onClick={() => setCartOpen(true)}>
-        <span className="cart-icon">🛒</span>
-        {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+      <button className="cartFab" onClick={() => setCartOpen(true)}>
+        <span className="cartFabIcon">🛒</span>
+        {cartCount > 0 && <span className="cartFabBadge">{cartCount}</span>}
       </button>
 
-      {/* Cart Modal */}
       {cartOpen && (
         <div className="modal-backdrop" onClick={() => setCartOpen(false)}>
           <div className="modal" onClick={(e) => e.stopPropagation()}>

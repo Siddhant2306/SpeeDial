@@ -11,7 +11,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 function App() {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem("theme");
-    return saved === "dark" || saved === "light" ? saved : "light";
+    // Default to dark neon if the user hasn’t chosen yet
+    return saved === "dark" || saved === "light" ? saved : "dark";
   });
 
   useEffect(() => {

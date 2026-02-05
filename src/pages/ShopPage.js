@@ -35,6 +35,7 @@ const PRODUCTS = [
     desc: "Simple, crispy, and perfectly salted.",
     type: "snack",
     category: "chips",
+    price: 30,
     image: makeSvgDataUri({ bg1: "#fbbf24", bg2: "#f97316", title: "Classic", emoji: "🥔" }),
   },
   {
@@ -43,6 +44,7 @@ const PRODUCTS = [
     desc: "Spicy desi masala punch.",
     type: "snack",
     category: "chips",
+    price: 35,
     image: makeSvgDataUri({ bg1: "#fb7185", bg2: "#ef4444", title: "Masala", emoji: "🌶️" }),
   },
   {
@@ -51,6 +53,7 @@ const PRODUCTS = [
     desc: "Smoky BBQ flavor with a crunch.",
     type: "snack",
     category: "chips",
+    price: 40,
     image: makeSvgDataUri({ bg1: "#a78bfa", bg2: "#8b5cf6", title: "BBQ", emoji: "🔥" }),
   },
   {
@@ -59,6 +62,7 @@ const PRODUCTS = [
     desc: "Cheesy, creamy, dangerously addictive.",
     type: "snack",
     category: "chips",
+    price: 40,
     image: makeSvgDataUri({ bg1: "#fde047", bg2: "#f59e0b", title: "Cheese", emoji: "🧀" }),
   },
   {
@@ -67,6 +71,7 @@ const PRODUCTS = [
     desc: "Tangy sour cream & onion vibes.",
     type: "snack",
     category: "chips",
+    price: 45,
     image: makeSvgDataUri({ bg1: "#22d3ee", bg2: "#3b82f6", title: "Sour", emoji: "🧅" }),
   },
 
@@ -77,6 +82,7 @@ const PRODUCTS = [
     desc: "Loaded nachos with a cheesy kick.",
     type: "snack",
     category: "snacks",
+    price: 60,
     image: makeSvgDataUri({ bg1: "#f72585", bg2: "#7209b7", title: "Nachos", emoji: "🧀" }),
   },
   {
@@ -85,6 +91,7 @@ const PRODUCTS = [
     desc: "Soft cookies with chocolate chunks.",
     type: "snack",
     category: "snacks",
+    price: 25,
     image: makeSvgDataUri({ bg1: "#b08968", bg2: "#7f5539", title: "Cookies", emoji: "🍪" }),
   },
 
@@ -95,6 +102,7 @@ const PRODUCTS = [
     desc: "Ice-cold fizzy refreshment.",
     type: "drink",
     category: "drinks",
+    price: 40,
     image: makeSvgDataUri({ bg1: "#111827", bg2: "#ef4444", title: "Cola", emoji: "🥤" }),
   },
   {
@@ -103,6 +111,7 @@ const PRODUCTS = [
     desc: "Fresh and tangy.",
     type: "drink",
     category: "drinks",
+    price: 50,
     image: makeSvgDataUri({ bg1: "#34d399", bg2: "#f59e0b", title: "Lemonade", emoji: "🍋" }),
   },
   {
@@ -111,6 +120,7 @@ const PRODUCTS = [
     desc: "Sweet, chilled, and smooth.",
     type: "drink",
     category: "drinks",
+    price: 55,
     image: makeSvgDataUri({ bg1: "#06b6d4", bg2: "#2563eb", title: "Iced Tea", emoji: "🧊" }),
   },
 ];
@@ -136,6 +146,10 @@ const ProductCard = ({ p, pickerQty, setPickerQty, addToCart }) => {
 
       <div className="product-body">
         <div className="product-title">{p.name}</div>
+        <div className="product-meta">
+          <div className="product-price">₹{p.price}</div>
+          <div className="product-unit">per item</div>
+        </div>
         <div className="product-desc">{p.desc}</div>
 
         <div className="product-row">
@@ -241,8 +255,17 @@ const ShopPage = () => {
 
   const cartLines = Object.entries(cart).map(([productId, qty]) => {
     const p = PRODUCTS.find((x) => x.id === productId);
-    return { id: productId, name: p?.name || productId, qty };
+    const price = p?.price ?? 0;
+    return {
+      id: productId,
+      name: p?.name || productId,
+      qty,
+      price,
+      lineTotal: price * qty,
+    };
   });
+
+  const cartTotal = cartLines.reduce((sum, l) => sum + l.lineTotal, 0);
 
   return (
     <div className="shop2">
@@ -366,15 +389,29 @@ const ShopPage = () => {
                   <div className="cart-line" key={line.id}>
                     <div>
                       <div className="cart-name">{line.name}</div>
-                      <div className="cart-qty">Qty: {line.qty}</div>
+                      <div className="cart-qty">
+                        Qty: {line.qty} • ₹{line.price} each
+                      </div>
                     </div>
-                    <button className="mini" onClick={() => removeFromCart(line.id)}>
-                      Remove
-                    </button>
+                    <div className="cart-right">
+                      <div className="cart-line-total">₹{line.lineTotal}</div>
+                      <button className="mini" onClick={() => removeFromCart(line.id)}>
+                        Remove
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
             )}
+
+            <div className="cart-summary">
+              <div>
+                Items: <b>{cartCount}</b>
+              </div>
+              <div>
+                Total: <b>₹{cartTotal}</b>
+              </div>
+            </div>
 
             <div className="modal-actions">
               <button className="buy-btn secondary" onClick={clearCart}>

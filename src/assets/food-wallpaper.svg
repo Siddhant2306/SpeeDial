@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#050613"/>
+      <stop offset="0.55" stop-color="#0a0b18"/>
+      <stop offset="1" stop-color="#04050a"/>
+    </linearGradient>
+    <radialGradient id="g1" cx="30%" cy="25%" r="60%">
+      <stop offset="0" stop-color="#22d3ee" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#22d3ee" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g2" cx="80%" cy="20%" r="65%">
+      <stop offset="0" stop-color="#8b5cf6" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#8b5cf6" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g3" cx="55%" cy="85%" r="70%">
+      <stop offset="0" stop-color="#f59e0b" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#f59e0b" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="food" width="240" height="240" patternUnits="userSpaceOnUse">
+      <rect width="240" height="240" fill="transparent"/>
+      <text x="20" y="60" font-size="44" opacity="0.22">🍔</text>
+      <text x="150" y="80" font-size="40" opacity="0.20">🍕</text>
+      <text x="70" y="160" font-size="42" opacity="0.20">🍟</text>
+      <text x="165" y="170" font-size="38" opacity="0.18">🥤</text>
+      <text x="35" y="210" font-size="36" opacity="0.16">🍪</text>
+      <text x="120" y="215" font-size="34" opacity="0.16">🌮</text>
+    </pattern>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18"/>
+    </filter>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#bg)"/>
+  <rect width="1920" height="1080" fill="url(#food)"/>
+
+  <circle cx="520" cy="260" r="420" fill="url(#g1)" filter="url(#blur)"/>
+  <circle cx="1540" cy="230" r="520" fill="url(#g2)" filter="url(#blur)"/>
+  <circle cx="980" cy="980" r="620" fill="url(#g3)" filter="url(#blur)"/>
+
+  <rect x="0" y="0" width="1920" height="1080" fill="#000" opacity="0.20"/>
+</svg>

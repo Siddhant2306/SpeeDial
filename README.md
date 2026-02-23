@@ -7,27 +7,27 @@ The project is built using modern JavaScript/React and deployed as a responsive 
 
 SpeeDial is a full-stack web application that simulates a real-world food ordering system. It allows users to:
 
-Browse available food items from different categories.
+->Browse available food items from different categories.
 
-Add selected items to the cart.
+->Add selected items to the cart.
 
-Place an order and view order details.
+->Place an order and view order details.
 
-Operate a simple and intuitive UI for ordering food quickly.
+->Operate a simple and intuitive UI for ordering food quickly.
 
-This project is suitable for college assignments, practical demonstrations, and real-time demo purposes.
+->This project is suitable for college assignments, practical demonstrations, and real-time demo purposes.
 
 🎯 Objectives
 
-The main goals of this project are:
+->The main goals of this project are:
 
-To demonstrate practical implementation of a food ordering system.
+->To demonstrate practical implementation of a food ordering system.
 
-To showcase front-end skills using React and related web technologies.
+->To showcase front-end skills using React and related web technologies.
 
-To implement interactive features like cart management and item browsing.
+->To implement interactive features like cart management and item browsing.
 
-To use Git and GitHub workflows for version control.
+->To use Git and GitHub workflows for version control.
 
 🧠 Key Features
 
@@ -44,27 +44,27 @@ The project is built using modern JavaScript/React and deployed as a responsive 
 
 SpeeDial is a full-stack web application that simulates a real-world food ordering system. It allows users to:
 
-Browse available food items from different categories.
+->Browse available food items from different categories.
 
-Add selected items to the cart.
+->Add selected items to the cart.
 
-Place an order and view order details.
+->Place an order and view order details.
 
-Operate a simple and intuitive UI for ordering food quickly.
+->Operate a simple and intuitive UI for ordering food quickly.
 
-This project is suitable for college assignments, practical demonstrations, and real-time demo purposes.
+->This project is suitable for college assignments, practical demonstrations, and real-time demo purposes.
 
 🎯 Objectives
 
-The main goals of this project are:
+->The main goals of this project are:
 
-To demonstrate practical implementation of a food ordering system.
+->To demonstrate practical implementation of a food ordering system.
 
-To showcase front-end skills using React and related web technologies.
+->To showcase front-end skills using React and related web technologies.
 
-To implement interactive features like cart management and item browsing.
+->To implement interactive features like cart management and item browsing.
 
-To use Git and GitHub workflows for version control.
+->To use Git and GitHub workflows for version control.
 
 🧠 Key Features
 
@@ -100,15 +100,15 @@ SpeeDial/
 🔹 package.json — Defines project dependencies and scripts
 🔹 README.md — Project documentation🚀 Usage Guide
 
-Browse menu from the main page.
+->Browse menu from the main page.
 
-Click on any food item to add to cart.
+->Click on any food item to add to cart.
 
-Navigate to cart to view selected items and total price.
+->Navigate to cart to view selected items and total price.
 
-Place order or update quantities.
+->Place order or update quantities.
 
-Enjoy your order experience!
+->Enjoy your order experience!
 
 📊 Learning Outcomes
 

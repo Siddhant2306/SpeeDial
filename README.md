@@ -1,9 +1,11 @@
-📘 SpeeDial – Food Ordering Web Application
+📘 #SpeeDial – Food Ordering Web Application
 
 SpeeDial is a modern food ordering web application developed for college use so that students can easily browse menus, select their favourite food or snacks, and place orders for delivery — all through a clean and responsive interface.
 The project is built using modern JavaScript/React and deployed as a responsive website.
 
-📌 Project Overview
+---
+
+📌 #Project Overview
 
 SpeeDial is a full-stack web application that simulates a real-world food ordering system. It allows users to:
 
@@ -17,7 +19,9 @@ SpeeDial is a full-stack web application that simulates a real-world food orderi
 
 ->This project is suitable for college assignments, practical demonstrations, and real-time demo purposes.
 
-🎯 Objectives
+---
+
+🎯 #Objectives
 
 ->The main goals of this project are:
 
@@ -29,7 +33,9 @@ SpeeDial is a full-stack web application that simulates a real-world food orderi
 
 ->To use Git and GitHub workflows for version control.
 
-🧠 Key Features
+---
+
+🧠 #Key Features
 
 ✔ Responsive food ordering interface
 ✔ Browse products menu
@@ -40,7 +46,7 @@ SpeeDial is a full-stack web application that simulates a real-world food orderi
 SpeeDial is a modern food ordering web application developed for college use so that students can easily browse menus, select their favourite food or snacks, and place orders for delivery — all through a clean and responsive interface.
 The project is built using modern JavaScript/React and deployed as a responsive website.
 
-📌 Project Overview
+📌 #Project Overview
 
 SpeeDial is a full-stack web application that simulates a real-world food ordering system. It allows users to:
 
@@ -54,7 +60,9 @@ SpeeDial is a full-stack web application that simulates a real-world food orderi
 
 ->This project is suitable for college assignments, practical demonstrations, and real-time demo purposes.
 
-🎯 Objectives
+---
+
+🎯 #Objectives
 
 ->The main goals of this project are:
 
@@ -66,7 +74,9 @@ SpeeDial is a full-stack web application that simulates a real-world food orderi
 
 ->To use Git and GitHub workflows for version control.
 
-🧠 Key Features
+---
+
+🧠 #Key Features
 
 ✔ Responsive food ordering interface
 ✔ Browse products menu
@@ -81,7 +91,9 @@ Scripting:-	JavaScript
 Package Management:-npm
 Version Control:-Git & GitHub
 
-📁 Project Structure
+---
+
+📁 #Project Structure
 
 The repository contains several key folders and files:
 
@@ -110,7 +122,9 @@ SpeeDial/
 
 ->Enjoy your order experience!
 
-📊 Learning Outcomes
+---
+
+📊 #Learning Outcomes
 
 By completing this project, you will learn:
 

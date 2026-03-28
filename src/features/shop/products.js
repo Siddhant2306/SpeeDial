@@ -207,12 +207,11 @@ export const PRODUCTS = [
       emoji: "💧",
     }),
   },
-  // Sweet
-   {
+  {
     id: "chocolates",
     name: "Chocolate",
     desc: "A Bite of Happiness",
-    type: "sweet",
+    type: "sweets",
     category: "sweet",
     price: 40,
     image: makeSvgDataUri({

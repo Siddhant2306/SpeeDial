@@ -48,7 +48,7 @@ export const PRODUCTS = [
     category: "chips",
     price: 35,
     image: makeSvgDataUri({
-      bg1: "#fb7185",
+      bg1: "#d3243e",
       bg2: "#ef4444",
       title: "Masala",
       emoji: "🌶️",
@@ -96,6 +96,20 @@ export const PRODUCTS = [
       emoji: "🧅",
     }),
   },
+  {
+    id: "chips-sweet",
+    name: "Chips • Tangy and Sweet",
+    desc: "Sweet. Crisp. Perfect.",
+    type: "snack",
+    category: "chips",
+    price: 45,
+    image: makeSvgDataUri({
+      bg1: "#a51458",
+      bg2: "#d8781e",
+      title: "Sweet",
+      emoji: "🍅",
+    }),
+  },
 
   // Other snacks
   {
@@ -125,6 +139,15 @@ export const PRODUCTS = [
       title: "Cookies",
       emoji: "🍪",
     }),
+  },
+  {
+    id: "kurkure",
+    name: "Masala kurkure",
+    desc: "flavour of Indian spices.",
+    type: "snack",
+    category: "snacks",
+    price: 30,
+    image: makeSvgDataUri({ bg1: "#043b15", bg2: "#7209b7", title: "Kurkure", emoji: "🧀" }),
   },
 
   // Drinks
@@ -168,6 +191,35 @@ export const PRODUCTS = [
       bg2: "#2563eb",
       title: "Iced Tea",
       emoji: "🧊",
+    }),
+  },
+  {
+    id: "wtaer",
+    name: "Water",
+    desc: "Stay hydrated stay healthy",
+    type: "drink",
+    category: "drinks",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#111827",
+      bg2: "#08bfec",
+      title: "Water",
+      emoji: "💧",
+    }),
+  },
+  // Sweet
+   {
+    id: "chocolates",
+    name: "Chocolate",
+    desc: "A Bite of Happiness",
+    type: "sweet",
+    category: "sweet",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#111827",
+      bg2: "#ef4444",
+      title: "Chocolate",
+      emoji: "🥤",
     }),
   },
 ];

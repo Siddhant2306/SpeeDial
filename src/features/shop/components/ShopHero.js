@@ -5,6 +5,7 @@ const TABS = [
   { id: "chips", label: "Chips" },
   { id: "snacks", label: "Snacks" },
   { id: "drinks", label: "Drinks" },
+  { id: "sweets", label: "Sweets" }
 ];
 
 const ShopHero = ({ activeTab, onTabChange, query, onQueryChange, cartCount }) => {

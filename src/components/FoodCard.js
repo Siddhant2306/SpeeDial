@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import "../css/FoodCard.css";
 import snackImage from "../assets/Screenshot 2025-02-18 072332.png";
 import drinkImage from "../assets/Screenshot 2025-02-18 072458.png";
+import { placeBulkOrders } from "../api/orders";
 
 const FoodCards = () => {
   // picker quantities (how many you want to add *this time*)
@@ -33,14 +34,7 @@ const FoodCards = () => {
         return;
       }
 
-      const res = await fetch("http://localhost:8080/orders/bulk", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ items }),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Checkout failed");
+      const data = await placeBulkOrders({ items });
 
       alert(`✅ Order placed! Order IDs: ${(data.order_ids || []).join(", ")}`);
       clearCart();

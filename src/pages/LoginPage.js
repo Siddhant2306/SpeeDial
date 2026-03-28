@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import "../css/login.css";
+import { loginUser, registerUser } from "../api/auth";
 
 const LoginPage = () => {
-  const [mode, setMode] = useState("login"); // login | signup
+  const [mode, setMode] = useState("login");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -12,24 +13,13 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const url =
+      const safeName = name.trim();
+      const safeEmail = email.trim().toLowerCase();
+
+      const data =
         mode === "signup"
-          ? "http://localhost:8080/auth/register"
-          : "http://localhost:8080/auth/login";
-
-      const payload =
-        mode === "signup"
-          ? { name: name.trim(), email: email.trim(), password }
-          : { email: email.trim(), password };
-
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Request failed");
+          ? await registerUser({ name: safeName, email: safeEmail, password })
+          : await loginUser({ email: safeEmail, password });
 
       alert(
         mode === "signup"

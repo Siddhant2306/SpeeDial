@@ -70,24 +70,54 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 10px;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 6px 10px;
+  border-radius: 10px;
+
+  /* Glass effect */
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+/* Buttons */
 .qty-control button {
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border: none;
-  background: color-mix(in srgb, var(--text) 88%, transparent);
-  color: var(--surface-solid);
+  border-radius: 8px;
+
+  /* Neon gradient feel */
+  background: linear-gradient(135deg, #7f5af0, #2cb67d);
+  color: white;
+
   font-size: 18px;
+  font-weight: bold;
   cursor: pointer;
-  border-radius: 6px;
+
+  transition: all 0.2s ease;
 }
 
+/* Hover effect */
+.qty-control button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(127, 90, 240, 0.6);
+}
+
+/* Click effect */
+.qty-control button:active {
+  transform: scale(0.95);
+}
+
+/* Quantity text */
 .qty-control span {
+  min-width: 24px;
+  text-align: center;
+
   font-size: 16px;
   font-weight: 600;
+  color: var(--text);
 }
 
 .cart-card {

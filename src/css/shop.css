@@ -312,12 +312,12 @@ button:disabled {
   height: 22px;
   border-radius: 999px;
   background: var(--accent);
-  color: #0b0e16;
+  color: #eff4f7;
   font-size: 12px;
   font-weight: 950;
   display: grid;
   place-items: center;
-  border: 2px solid white;
+  border: 2px solid rgb(113, 177, 230);
 }
 
 /* Keep existing modal styles (from earlier) */
@@ -399,7 +399,7 @@ button:disabled {
   height: 30px;
   border-radius: 8px;
   border: 1px solid var(--border);
-  background: #d10a0a;
+  background: #09c7e0;
   color: white;
   font-size: 16px;
   display: flex;
@@ -409,7 +409,7 @@ button:disabled {
 }
 
 .qty-btn:hover {
-  background: #0069f1;
+  background: #14abc5;
   transform: scale(1.1);
 }
 
@@ -462,4 +462,129 @@ button:disabled {
   gap: 10px;
   justify-content: flex-end;
   flex-wrap: wrap;
+}
+
+/* ADDRESS TEXTAREA */
+.address-input {
+  width: 100%;
+  height: 150px;       /* increased height */
+  padding: 12px;
+  margin: 16px 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  color: var(--text);
+  resize: none;
+  font-size: 15px;
+}
+
+/* MODAL BUTTONS */
+.modal .buy-btn {
+  padding: 10px 20px;   /* slightly larger */
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.1s ease;
+}
+
+.modal .buy-btn.secondary {
+  background: #555; /* Cancel / secondary button */
+}
+
+.modal .buy-btn:hover {
+  transform: scale(1.05);
+}
+
+/* CLOSE BUTTON */
+.modal .x {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+/* ------------------- POPUP CENTER & SIZE ------------------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;       /* vertically center */
+  justify-content: center;   /* horizontally center */
+  padding: 18px;
+  z-index: 10000;
+}
+
+.modal {
+  width: 500px;            /* increased width */
+  max-width: 90%;          /* responsive */
+  max-height: 80vh;        /* prevent too tall */
+  overflow-y: auto;
+  background: var(--surface-solid);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 24px;           /* more padding */
+  box-shadow: 0 18px 55px rgba(0,0,0,0.32);
+  border: 1px solid var(--border);
+  animation: slideUp 220ms ease-out;
+  position: relative;
+}
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.payment-options div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upi-input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  color: var(--text);
+  font-size: 14px;
+}
+/* Common styling for all modal cross buttons */
+.modal button.absolute {
+  position: absolute;       /* ensures top-right placement inside relative parent */
+  top: 10px;                /* distance from top */
+  right: 10px;              /* distance from right */
+  background: transparent;  /* no background */
+  border: none;             /* no border */
+  font-size: 1.5rem;        /* bigger cross */
+  font-weight: bold;        /* bold cross */
+  color: #555;              /* default color */
+  cursor: pointer;          /* pointer on hover */
+  transition: color 0.2s ease;
+}
+
+/* Hover effect */
+.modal button.absolute:hover {
+  color: #f3ebeb;              /* darker color on hover */
+}
+
+/* Optional: increase clickable area */
+.modal button.absolute::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+}
+
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

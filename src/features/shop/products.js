@@ -212,14 +212,46 @@ export const PRODUCTS = [
     name: "Chocolate",
     desc: "A Bite of Happiness",
     type: "sweets",
-    category: "sweet",
+    category: "sweets",
     price: 40,
     image: makeSvgDataUri({
-      bg1: "#111827",
-      bg2: "#ef4444",
+      bg1: "#704d34",
+      bg2: "#372d2d",
       title: "Chocolate",
-      emoji: "🥤",
+      emoji: "🍫",
     }),
   },
+
+  {
+    id: "Candies",
+    name: "Candies",
+    desc: "A Bite of sweetness",
+    type: "sweets",
+    category: "sweets",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#ceb6a6",
+      bg2: "#c791c3",
+      title: "Candies",
+      emoji: "🍬",
+    }),
+  },
+
+  {
+    id: "ice-cream",
+    name: "Ice Cream",
+    desc: "A Bite of cold sweetness",
+    type: "sweets",
+    category: "sweets",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#93cecf",
+      bg2: "#d665da",
+      title: "Ice Cream",
+      emoji: "🍦",
+    }),
+  },
+  
+  
 ];
 

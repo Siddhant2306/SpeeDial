@@ -45,7 +45,7 @@ const ShopPage = () => {
 
   const clearCart = () => setCart({});
 
-  const { chips, snacks, drinks } = useMemo(() => {
+  const { chips, snacks, drinks, sweets } = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
     const filtered = PRODUCTS.filter((p) => {
@@ -62,6 +62,7 @@ const ShopPage = () => {
       chips: filtered.filter((p) => p.category === "chips"),
       snacks: filtered.filter((p) => p.type === "snack" && p.category !== "chips"),
       drinks: filtered.filter((p) => p.type === "drink"),
+      sweets: filtered.filter((p) => p.type === "sweets" || p.type === "sweets"),
     };
   }, [activeTab, query]);
 
@@ -106,7 +107,9 @@ const ShopPage = () => {
     }
   };
 
-  const isEmpty = chips.length === 0 && snacks.length === 0 && drinks.length === 0;
+  
+
+  const isEmpty = chips.length === 0 && snacks.length === 0 && drinks.length === 0 && sweets.length === 0;
 
   return (
     <div className="shop2">
@@ -156,6 +159,22 @@ const ShopPage = () => {
             <div className="section2">Drinks</div>
             <div className="grid2">
               {drinks.map((p) => (
+                <ProductCard
+                  key={p.id}
+                  product={p}
+                  quantity={cart[p.id] || 0}
+                  onChangeQuantity={changeCartQuantity}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
+        {sweets.length > 0 && (
+          <>
+            <div className="section2">Sweets</div>
+            <div className="grid2">
+              {sweets.map((p) => (
                 <ProductCard
                   key={p.id}
                   product={p}

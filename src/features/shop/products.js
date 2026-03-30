@@ -48,7 +48,7 @@ export const PRODUCTS = [
     category: "chips",
     price: 35,
     image: makeSvgDataUri({
-      bg1: "#fb7185",
+      bg1: "#d3243e",
       bg2: "#ef4444",
       title: "Masala",
       emoji: "🌶️",
@@ -96,6 +96,20 @@ export const PRODUCTS = [
       emoji: "🧅",
     }),
   },
+  {
+    id: "chips-sweet",
+    name: "Chips • Tangy and Sweet",
+    desc: "Sweet. Crisp. Perfect.",
+    type: "snack",
+    category: "chips",
+    price: 45,
+    image: makeSvgDataUri({
+      bg1: "#a51458",
+      bg2: "#d8781e",
+      title: "Sweet",
+      emoji: "🍅",
+    }),
+  },
 
   // Other snacks
   {
@@ -125,6 +139,15 @@ export const PRODUCTS = [
       title: "Cookies",
       emoji: "🍪",
     }),
+  },
+  {
+    id: "kurkure",
+    name: "Masala kurkure",
+    desc: "flavour of Indian spices.",
+    type: "snack",
+    category: "snacks",
+    price: 30,
+    image: makeSvgDataUri({ bg1: "#043b15", bg2: "#7209b7", title: "Kurkure", emoji: "🧀" }),
   },
 
   // Drinks
@@ -170,5 +193,65 @@ export const PRODUCTS = [
       emoji: "🧊",
     }),
   },
+  {
+    id: "wtaer",
+    name: "Water",
+    desc: "Stay hydrated stay healthy",
+    type: "drink",
+    category: "drinks",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#111827",
+      bg2: "#08bfec",
+      title: "Water",
+      emoji: "💧",
+    }),
+  },
+  {
+    id: "chocolates",
+    name: "Chocolate",
+    desc: "A Bite of Happiness",
+    type: "sweets",
+    category: "sweets",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#704d34",
+      bg2: "#372d2d",
+      title: "Chocolate",
+      emoji: "🍫",
+    }),
+  },
+
+  {
+    id: "Candies",
+    name: "Candies",
+    desc: "A Bite of sweetness",
+    type: "sweets",
+    category: "sweets",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#ceb6a6",
+      bg2: "#c791c3",
+      title: "Candies",
+      emoji: "🍬",
+    }),
+  },
+
+  {
+    id: "ice-cream",
+    name: "Ice Cream",
+    desc: "A Bite of cold sweetness",
+    type: "sweets",
+    category: "sweets",
+    price: 40,
+    image: makeSvgDataUri({
+      bg1: "#93cecf",
+      bg2: "#d665da",
+      title: "Ice Cream",
+      emoji: "🍦",
+    }),
+  },
+  
+  
 ];
 

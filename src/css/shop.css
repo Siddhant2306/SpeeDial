@@ -1,5 +1,17 @@
 @import url('./FoodCard.css');
+button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
 
+button:active {
+  transform: scale(0.95);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 /* New neon shop layout */
 .shop2 {
   padding-top: 110px;
@@ -81,6 +93,11 @@
   font-weight: 900;
   cursor: pointer;
 }
+.tab2:hover {
+  transform: scale(1.05);
+  background: color-mix(in srgb, var(--surface-solid) 80%, transparent);
+}
+
 
 .tab2.active {
   border-color: color-mix(in srgb, var(--accent-2) 45%, var(--border));
@@ -243,7 +260,9 @@
 }
 
 .neon-btn:hover {
-  filter: brightness(1.06);
+  transform: scale(1.05);
+  filter: brightness(1.08);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent-2) 40%, transparent)
 }
 
 .empty2 {
@@ -277,6 +296,9 @@
   filter: brightness(1.06);
   box-shadow: 0 26px 90px rgba(0,0,0,0.70);
 }
+.cartFab:active {
+  transform: scale(0.95);
+}
 
 .cartFabIcon {
   font-size: 22px;
@@ -290,12 +312,12 @@
   height: 22px;
   border-radius: 999px;
   background: var(--accent);
-  color: #0b0e16;
+  color: #eff4f7;
   font-size: 12px;
   font-weight: 950;
   display: grid;
   place-items: center;
-  border: 2px solid white;
+  border: 2px solid rgb(113, 177, 230);
 }
 
 /* Keep existing modal styles (from earlier) */
@@ -365,7 +387,37 @@
 
 .cart-name { font-weight: 900; }
 .cart-qty { color: var(--muted); font-size: 13px; margin-top: 2px; font-weight: 700; }
+.qty-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+}
 
+.qty-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #09c7e0;
+  color: white;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease; /* 👈 smooth effect */
+}
+
+.qty-btn:hover {
+  background: #14abc5;
+  transform: scale(1.1);
+}
+
+.qty-value {
+  min-width: 20px;
+  text-align: center;
+  font-weight: bold;
+}
 .cart-right {
   display: flex;
   flex-direction: column;
@@ -392,10 +444,17 @@
   border: none;
   border-radius: 10px;
   padding: 8px 10px;
-  background: #333;
-  color: white;
+  background: #8acc87;
+  color: rgb(14, 227, 235);
   cursor: pointer;
+  transition: all 0.2s ease;
 }
+
+.mini:hover {
+  background: #555;
+  transform: scale(1.05);
+}
+
 
 .modal-actions {
   margin-top: 14px;
@@ -403,4 +462,129 @@
   gap: 10px;
   justify-content: flex-end;
   flex-wrap: wrap;
+}
+
+/* ADDRESS TEXTAREA */
+.address-input {
+  width: 100%;
+  height: 150px;       /* increased height */
+  padding: 12px;
+  margin: 16px 0;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  color: var(--text);
+  resize: none;
+  font-size: 15px;
+}
+
+/* MODAL BUTTONS */
+.modal .buy-btn {
+  padding: 10px 20px;   /* slightly larger */
+  border: none;
+  border-radius: 8px;
+  background: var(--accent);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.1s ease;
+}
+
+.modal .buy-btn.secondary {
+  background: #555; /* Cancel / secondary button */
+}
+
+.modal .buy-btn:hover {
+  transform: scale(1.05);
+}
+
+/* CLOSE BUTTON */
+.modal .x {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+/* ------------------- POPUP CENTER & SIZE ------------------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;       /* vertically center */
+  justify-content: center;   /* horizontally center */
+  padding: 18px;
+  z-index: 10000;
+}
+
+.modal {
+  width: 500px;            /* increased width */
+  max-width: 90%;          /* responsive */
+  max-height: 80vh;        /* prevent too tall */
+  overflow-y: auto;
+  background: var(--surface-solid);
+  color: var(--text);
+  border-radius: 16px;
+  padding: 24px;           /* more padding */
+  box-shadow: 0 18px 55px rgba(0,0,0,0.32);
+  border: 1px solid var(--border);
+  animation: slideUp 220ms ease-out;
+  position: relative;
+}
+.payment-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.payment-options div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.upi-input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-solid);
+  color: var(--text);
+  font-size: 14px;
+}
+/* Common styling for all modal cross buttons */
+.modal button.absolute {
+  position: absolute;       /* ensures top-right placement inside relative parent */
+  top: 10px;                /* distance from top */
+  right: 10px;              /* distance from right */
+  background: transparent;  /* no background */
+  border: none;             /* no border */
+  font-size: 1.5rem;        /* bigger cross */
+  font-weight: bold;        /* bold cross */
+  color: #555;              /* default color */
+  cursor: pointer;          /* pointer on hover */
+  transition: color 0.2s ease;
+}
+
+/* Hover effect */
+.modal button.absolute:hover {
+  color: #f3ebeb;              /* darker color on hover */
+}
+
+/* Optional: increase clickable area */
+.modal button.absolute::before {
+  content: "";
+  position: absolute;
+  top: -5px;
+  left: -5px;
+  right: -5px;
+  bottom: -5px;
+}
+
+
+@keyframes slideUp {
+  from { transform: translateY(16px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
 }

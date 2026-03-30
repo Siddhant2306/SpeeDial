@@ -44,20 +44,20 @@
 .login-form input {
   height: 42px;
   border-radius: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid #07a7f1;
   padding: 0 12px;
   outline: none;
 }
 
 .login-form input:focus {
-  border-color: #111;
+  border-color: #35a2eb;
 }
 
 .primary {
   height: 44px;
   border: none;
   border-radius: 10px;
-  background: #111;
+  background: #10a2e6;
   color: white;
   font-weight: 600;
   cursor: pointer;
@@ -72,7 +72,7 @@
   margin-top: 12px;
   background: transparent;
   border: none;
-  color: #111;
+  color: #469be0;
   cursor: pointer;
   text-decoration: underline;
 }

@@ -1,27 +1,109 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import "../css/shop.css";
 import { placeBulkOrders } from "../api/orders";
+import { getQuickCommerceProducts, syncQuickCommerce } from "../api/products";
 import CartFab from "../features/shop/components/CartFab";
 import CartModal from "../features/shop/components/CartModal";
 import ProductCard from "../features/shop/components/ProductCard";
 import ShopHero from "../features/shop/components/ShopHero";
-import { PRODUCTS } from "../features/shop/products";
-
-const PRODUCTS_BY_ID = new Map(PRODUCTS.map((p) => [p.id, p]));
 
 const ShopPage = () => {
+  const [products, setProducts] = useState([]);
+  const [loadingProducts, setLoadingProducts] = useState(true);
+  const [productsError, setProductsError] = useState("");
+  const [syncing, setSyncing] = useState(false);
+  const [syncError, setSyncError] = useState("");
+  const [syncResult, setSyncResult] = useState(null);
+
   const [cart, setCart] = useState({});
   const [cartOpen, setCartOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [query, setQuery] = useState("");
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function load() {
+        setLoadingProducts(true);
+      setProductsError("");
+      try {
+        const data = await getQuickCommerceProducts();
+        if (cancelled) return;
+        setProducts(Array.isArray(data) ? data : []);
+      } catch (err) {
+        if (cancelled) return;
+        setProductsError(err?.message || "Failed to load products");
+      } finally {
+        if (!cancelled) setLoadingProducts(false);
+      }
+    }
+
+    load();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const syncNow = async () => {
+    if (syncing) return;
+    setSyncing(true);
+    setSyncError("");
+    setSyncResult(null);
+
+    try {
+      const q = (query || "").trim() || "milk";
+      const result = await syncQuickCommerce({ query: q });
+      setSyncResult(result || null);
+
+      const data = await getQuickCommerceProducts();
+      setProducts(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setSyncError(err?.message || "Sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  };
+
   const cartCount = useMemo(() => {
     return Object.values(cart).reduce((sum, qty) => sum + qty, 0);
   }, [cart]);
 
+  const productsById = useMemo(() => {
+    return new Map(products.map((p) => [p.id, p]));
+  }, [products]);
+
+  const tabs = useMemo(() => {
+    const counts = new Map();
+
+    products.forEach((p) => {
+      const cat = (p.category || "").trim();
+      if (!cat) return;
+      counts.set(cat, (counts.get(cat) || 0) + 1);
+    });
+
+    const top = [...counts.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 6)
+      .map(([cat]) => ({ id: cat, label: cat }));
+
+    return [{ id: "all", label: "All" }, ...top];
+  }, [products]);
+
   const changeCartQuantity = (productId, delta) => {
     setCart((current) => {
-      const nextQty = (current[productId] || 0) + delta;
+      const product = productsById.get(productId);
+      const maxQty = product
+        ? product.inStock
+          ? Number.isFinite(product.quantity)
+            ? Math.max(0, product.quantity)
+            : Infinity
+          : 0
+        : Infinity;
+
+      const desiredQty = (current[productId] || 0) + delta;
+      const nextQty = Math.min(maxQty, desiredQty);
+
+      if (nextQty === (current[productId] || 0)) return current;
 
       if (nextQty <= 0) {
         if (!current[productId]) return current;
@@ -45,29 +127,31 @@ const ShopPage = () => {
 
   const clearCart = () => setCart({});
 
-  const { chips, snacks, drinks } = useMemo(() => {
+  const filteredProducts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+    const normalizedCategory = (activeTab || "all").trim().toLowerCase();
 
-    const filtered = PRODUCTS.filter((p) => {
-      const key = p.category || p.type;
-      const matchesTab = activeTab === "all" ? true : key === activeTab;
+    return products.filter((p) => {
+      const category = (p.category || "").trim().toLowerCase();
+      const name = (p.name || "").trim().toLowerCase();
+      const brand = (p.brand || "").trim().toLowerCase();
+
+      const matchesTab =
+        normalizedCategory === "all" ? true : category === normalizedCategory;
+
       const matchesQuery =
         !normalizedQuery ||
-        p.name.toLowerCase().includes(normalizedQuery) ||
-        p.desc.toLowerCase().includes(normalizedQuery);
+        name.includes(normalizedQuery) ||
+        brand.includes(normalizedQuery) ||
+        category.includes(normalizedQuery);
+
       return matchesTab && matchesQuery;
     });
-
-    return {
-      chips: filtered.filter((p) => p.category === "chips"),
-      snacks: filtered.filter((p) => p.type === "snack" && p.category !== "chips"),
-      drinks: filtered.filter((p) => p.type === "drink"),
-    };
-  }, [activeTab, query]);
+  }, [products, activeTab, query]);
 
   const cartLines = useMemo(() => {
     return Object.entries(cart).map(([productId, qty]) => {
-      const p = PRODUCTS_BY_ID.get(productId);
+      const p = productsById.get(productId);
       const price = p?.price ?? 0;
       return {
         id: productId,
@@ -77,7 +161,7 @@ const ShopPage = () => {
         lineTotal: price * qty,
       };
     });
-  }, [cart]);
+  }, [cart, productsById]);
 
   const cartTotal = useMemo(() => {
     return cartLines.reduce((sum, line) => sum + line.lineTotal, 0);
@@ -106,12 +190,15 @@ const ShopPage = () => {
     }
   };
 
-  const isEmpty = chips.length === 0 && snacks.length === 0 && drinks.length === 0;
+  
+
+  const isEmpty = filteredProducts.length === 0;
 
   return (
     <div className="shop2">
       <div className="shop2-inner">
         <ShopHero
+          tabs={tabs}
           activeTab={activeTab}
           onTabChange={setActiveTab}
           query={query}
@@ -119,11 +206,22 @@ const ShopPage = () => {
           cartCount={cartCount}
         />
 
-        {chips.length > 0 && (
+        {loadingProducts && <div className="empty2">Loading products…</div>}
+        {!loadingProducts && productsError && (
+          <div className="empty2">
+            {productsError === "unauthorized"
+              ? "Unauthorized. Set REACT_APP_API_KEY in .env (frontend) to match API_KEY in backend/.env."
+              : `Failed to load products: ${productsError}`}
+          </div>
+        )}
+
+        {!loadingProducts && !productsError && !isEmpty && (
           <>
-            <div className="section2">Chips</div>
+            <div className="section2">
+              {activeTab === "all" ? "Products" : activeTab}
+            </div>
             <div className="grid2">
-              {chips.map((p) => (
+              {filteredProducts.map((p) => (
                 <ProductCard
                   key={p.id}
                   product={p}
@@ -135,39 +233,25 @@ const ShopPage = () => {
           </>
         )}
 
-        {snacks.length > 0 && (
-          <>
-            <div className="section2">Snacks</div>
-            <div className="grid2">
-              {snacks.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  quantity={cart[p.id] || 0}
-                  onChangeQuantity={changeCartQuantity}
-                />
-              ))}
+        {!loadingProducts && !productsError && isEmpty && (
+          <div className="empty2">
+            <div>No products found.</div>
+            <div style={{ marginTop: 10, display: "flex", gap: 10, flexWrap: "wrap" }}>
+              <button className="neon-btn" onClick={syncNow} disabled={syncing}>
+                {syncing ? "Syncing…" : "Sync products"}
+              </button>
+              <div style={{ alignSelf: "center" }}>
+                Uses query: <b>{(query || "").trim() || "milk"}</b>
+              </div>
             </div>
-          </>
+            {syncError && <div style={{ marginTop: 10 }}>Sync failed: {syncError}</div>}
+            {syncResult && (
+              <div style={{ marginTop: 10 }}>
+                Synced {syncResult.saved ?? 0} items (fetched {syncResult.fetched ?? 0}).
+              </div>
+            )}
+          </div>
         )}
-
-        {drinks.length > 0 && (
-          <>
-            <div className="section2">Drinks</div>
-            <div className="grid2">
-              {drinks.map((p) => (
-                <ProductCard
-                  key={p.id}
-                  product={p}
-                  quantity={cart[p.id] || 0}
-                  onChangeQuantity={changeCartQuantity}
-                />
-              ))}
-            </div>
-          </>
-        )}
-
-        {isEmpty && <div className="empty2">No items match your search.</div>}
       </div>
 
       <CartFab count={cartCount} onOpen={() => setCartOpen(true)} />

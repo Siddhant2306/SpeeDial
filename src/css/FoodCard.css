@@ -70,53 +70,69 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 12px;
   margin-top: 12px;
-  padding: 6px 10px;
-  border-radius: 10px;
-
-  /* Glass effect */
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 10px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-solid) 70%, transparent);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
 }
 
 /* Buttons */
 .qty-control button {
-  width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: 8px;
-
-  /* Neon gradient feel */
-  background: linear-gradient(135deg, #7f5af0, #2cb67d);
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 30%, var(--border));
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 85%, #000),
+    color-mix(in srgb, var(--accent-2) 85%, #000)
+  );
   color: white;
-
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 20px;
+  font-weight: 950;
   cursor: pointer;
-
-  transition: all 0.2s ease;
+  transition: transform 140ms ease, filter 140ms ease, box-shadow 140ms ease,
+    border-color 140ms ease;
 }
 
 /* Hover effect */
 .qty-control button:hover {
-  transform: scale(1.1);
-  box-shadow: 0 0 10px rgba(127, 90, 240, 0.6);
+  filter: brightness(1.06);
+  border-color: color-mix(in srgb, var(--accent-2) 55%, var(--border));
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent-2) 18%, transparent);
+}
+
+.qty-control button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: none;
+  box-shadow: none;
+}
+
+.qty-control button:disabled:hover {
+  border-color: color-mix(in srgb, var(--accent-2) 30%, var(--border));
+  box-shadow: none;
+  filter: none;
+  transform: none;
 }
 
 /* Click effect */
 .qty-control button:active {
-  transform: scale(0.95);
+  transform: translateY(1px) scale(0.98);
 }
 
 /* Quantity text */
 .qty-control span {
-  min-width: 24px;
+  min-width: 28px;
   text-align: center;
 
   font-size: 16px;
-  font-weight: 600;
+  font-weight: 800;
   color: var(--text);
 }
 

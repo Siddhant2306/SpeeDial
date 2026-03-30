@@ -9,8 +9,10 @@ from .routes import register_routes
 
 
 def create_app():
+    root_env_path = Path(__file__).resolve().parents[2] / ".env"
     env_path = Path(__file__).resolve().parents[1] / ".env"
-    load_dotenv(env_path)
+    load_dotenv(root_env_path)
+    load_dotenv(env_path, override=True)
 
     app = Flask(__name__)
     CORS(app)

@@ -2,9 +2,11 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import NavBar from "./components/NavBar";
 import LoginPage from "./pages/LoginPage";
+import AdminLoginPage from "./pages/AdminLoginPage";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
 import FloatingLoginButton from "./components/FloatingLoginButton";
+
 
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
@@ -35,9 +37,20 @@ function App() {
             </div>
           }
         />
+
+        {/* ✅ Admin Login (ADD THIS) */}
+        <Route
+          path="/admin"
+          element={
+            <div>
+              <AdminLoginPage />
+
+            </div>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
 }
-
+     
 export default App;

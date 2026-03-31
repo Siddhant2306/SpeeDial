@@ -2,9 +2,11 @@ import logging
 import os
 import time
 from datetime import datetime
+from pathlib import Path
 
 import requests
 from sqlalchemy.dialects.mysql import insert as mysql_insert
+from dotenv import dotenv_values
 
 from ..extensions import db
 from ..models import Product
@@ -26,17 +28,72 @@ class QuickCommerceAPIError(Exception):
         self.status_code = status_code
 
 
+def _sanitize_key(value):
+    if value is None:
+        return ""
+    s = str(value).strip()
+    if not s:
+        return ""
+    s = s.strip("\"'").strip()
+    if "#" in s:
+        s = s.split("#", 1)[0].strip()
+    return s
+
+
+def _is_placeholder(value):
+    v = (value or "").strip().lower()
+    if not v:
+        return True
+    if "change-me" in v:
+        return True
+    if "..." in v:
+        return True
+    if "<" in v or ">" in v:
+        return True
+    if "your-api-key" in v or "your_api_key" in v:
+        return True
+    if v in {"sk_live", "sk_test", "sk_live_", "sk_test_"}:
+        return True
+    return False
+
+
+def _read_env_value(env_path, key):
+    try:
+        values = dotenv_values(env_path)
+    except Exception:
+        return ""
+    return _sanitize_key(values.get(key))
+
+
 def _get_api_key():
-    api_key = (os.getenv("QUICKCOMMERCE_API_KEY") or "").strip()
-    if api_key:
+    api_key = _sanitize_key(os.getenv("API_KEY"))
+    if api_key and not _is_placeholder(api_key):
         return api_key
 
-    fallback = (os.getenv("API_KEY") or "").strip()
-    if fallback:
-        logger.warning("QUICKCOMMERCE_API_KEY not set; falling back to API_KEY for upstream calls")
+    # If env vars were overridden (e.g., multiple .env files), try reading from disk.
+    try:
+        root_env_path = Path(__file__).resolve().parents[3] / ".env"
+        backend_env_path = Path(__file__).resolve().parents[2] / ".env"
+    except Exception:
+        root_env_path = None
+        backend_env_path = None
+
+    for env_path in (backend_env_path, root_env_path):
+        if not env_path:
+            continue
+        if not env_path.exists():
+            continue
+        candidate = _read_env_value(env_path, "API_KEY")
+        if candidate and not _is_placeholder(candidate):
+            logger.warning("Loaded API_KEY from %s", env_path)
+            return candidate
+
+    fallback = _sanitize_key(os.getenv("API_KEY"))
+    if fallback and not _is_placeholder(fallback) and fallback.lower().startswith("sk_"):
+        logger.warning("API_KEY not set; falling back to API_KEY for upstream calls")
         return fallback
 
-    raise QuickCommerceAPIError("missing QUICKCOMMERCE_API_KEY", status_code=500)
+    raise QuickCommerceAPIError("missing API_KEY", status_code=500)
 
 
 def _to_int(value, default=0):
@@ -62,22 +119,36 @@ def fetch_products(
     if pincode:
         params["pincode"] = pincode
 
-    headers = {"X-API-Key": _get_api_key(), "User-Agent": "SpeeDial/1.0"}
+    api_key = _get_api_key()
+    headers = {"X-API-Key": api_key, "User-Agent": "SpeeDial/1.0"}
+
+    def _do_request(request_params, request_headers):
+        res = requests.get(QCA_SEARCH_URL, params=request_params, headers=request_headers, timeout=timeout_s)
+        try:
+            payload = res.json()
+        except ValueError:
+            payload = None
+        return res, payload
 
     for attempt in range(max_retries + 1):
         try:
-            res = requests.get(QCA_SEARCH_URL, params=params, headers=headers, timeout=timeout_s)
-            try:
-                payload = res.json()
-            except ValueError:
-                payload = None
+            res, payload = _do_request(params, headers)
+
+            # Some upstreams may not accept custom headers in certain environments.
+            # QuickCommerce also supports passing the key via query parameter `api_key`.
+            if res.status_code == 401:
+                res, payload = _do_request({**params, "api_key": api_key}, {"User-Agent": "SpeeDial/1.0"})
 
             if not res.ok:
                 message = None
                 if isinstance(payload, dict):
                     message = payload.get("message") or payload.get("error")
+                if res.status_code == 401:
+                    message = message or "upstream unauthorized (401) — check API_KEY"
+                    raise QuickCommerceAPIError(message, status_code=502)
+
                 message = message or f"upstream error ({res.status_code})"
-                raise QuickCommerceAPIError(message, status_code=res.status_code)
+                raise QuickCommerceAPIError(message, status_code=502)
 
             if not isinstance(payload, dict):
                 raise QuickCommerceAPIError("invalid upstream response", status_code=502)

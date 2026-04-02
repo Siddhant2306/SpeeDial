@@ -29,4 +29,8 @@ __pycache__/
 *.pyc
 backend/.env
 
-.env
+/.env
+
+# python venvs
+.venv/
+venv/

@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import "../css/shop.css";
 import { placeBulkOrders } from "../api/orders";
-import { getQuickCommerceProducts, syncQuickCommerce } from "../api/products";
+import { getProducts, syncQuickCommerce } from "../api/products";
 import CartFab from "../features/shop/components/CartFab";
 import CartModal from "../features/shop/components/CartModal";
 import ProductCard from "../features/shop/components/ProductCard";
@@ -27,7 +27,7 @@ const ShopPage = () => {
         setLoadingProducts(true);
       setProductsError("");
       try {
-        const data = await getQuickCommerceProducts();
+        const data = await getProducts();
         if (cancelled) return;
         setProducts(Array.isArray(data) ? data : []);
       } catch (err) {
@@ -55,7 +55,7 @@ const ShopPage = () => {
       const result = await syncQuickCommerce({ query: q });
       setSyncResult(result || null);
 
-      const data = await getQuickCommerceProducts();
+      const data = await getProducts();
       setProducts(Array.isArray(data) ? data : []);
     } catch (err) {
       setSyncError(err?.message || "Sync failed");
@@ -247,7 +247,8 @@ const ShopPage = () => {
             {syncError && <div style={{ marginTop: 10 }}>Sync failed: {syncError}</div>}
             {syncResult && (
               <div style={{ marginTop: 10 }}>
-                Synced {syncResult.saved ?? 0} items (fetched {syncResult.fetched ?? 0}).
+                Synced {syncResult.total ?? syncResult.saved ?? 0} items (inserted{" "}
+                {syncResult.inserted ?? 0}, updated {syncResult.updated ?? 0}, fetched {syncResult.fetched ?? 0}).
               </div>
             )}
           </div>

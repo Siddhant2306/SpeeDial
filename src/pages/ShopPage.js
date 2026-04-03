@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState, useEffect} from "react";
 import "../css/shop.css";
 import { placeBulkOrders } from "../api/orders";
 import { getProducts, syncQuickCommerce } from "../api/products";
@@ -6,6 +6,7 @@ import CartFab from "../features/shop/components/CartFab";
 import CartModal from "../features/shop/components/CartModal";
 import ProductCard from "../features/shop/components/ProductCard";
 import ShopHero from "../features/shop/components/ShopHero";
+import AiFab  from "../features/shop/components/Aifab";
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -19,6 +20,8 @@ const ShopPage = () => {
   const [cartOpen, setCartOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [query, setQuery] = useState("");
+
+  const [aiopen, setaiopen] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -206,13 +209,13 @@ const ShopPage = () => {
           cartCount={cartCount}
         />
 
-        {loadingProducts && <div className="empty2">Loading products…</div>}
+        {loadingProducts && <div className="empty2">Loading products...</div>}
         {!loadingProducts && productsError && (
           <div className="empty2">
             {productsError === "unauthorized"
               ? "Unauthorized. Set REACT_APP_API_KEY in .env (frontend) to match API_KEY in backend/.env."
               : `Failed to load products: ${productsError}`}
-          </div>
+            </div>
         )}
 
         {!loadingProducts && !productsError && !isEmpty && (
@@ -255,6 +258,8 @@ const ShopPage = () => {
         )}
       </div>
 
+      <AiFab onOpen={() => setaiopen(true)}/>
+        
       <CartFab count={cartCount} onOpen={() => setCartOpen(true)} />
       <CartModal
         open={cartOpen}

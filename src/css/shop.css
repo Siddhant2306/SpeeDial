@@ -285,7 +285,7 @@ button:disabled {
   background:
     radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 55%),
     linear-gradient(180deg, #0b0e16, #000);
-  color: white;
+  color: rgb(247, 245, 245);
   cursor: pointer;
   box-shadow: 0 20px 70px rgba(0,0,0,0.55);
   transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
@@ -587,4 +587,34 @@ button:disabled {
 @keyframes slideUp {
   from { transform: translateY(16px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+.aiFab {
+  position: fixed;
+  right: 100px;
+  bottom: 18px;
+  z-index: 9999;
+
+  width: 60px;
+  height: 60px;
+  border-radius: 18px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 28%, var(--border));
+  background:
+    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 55%),
+    linear-gradient(180deg, #0b0e16, #000);
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 20px 70px rgba(0,0,0,0.55);
+  transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
+}
+
+
+.aifabIcon {
+  font-size: 22px;
+}
+
+.aiFab:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  box-shadow: 0 26px 90px rgba(0,0,0,0.70);
 }

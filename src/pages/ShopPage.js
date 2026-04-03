@@ -7,6 +7,7 @@ import CartModal from "../features/shop/components/CartModal";
 import ProductCard from "../features/shop/components/ProductCard";
 import ShopHero from "../features/shop/components/ShopHero";
 import AiFab  from "../features/shop/components/Aifab";
+import AiModal from "../features/shop/components/AIModal";
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -259,7 +260,8 @@ const ShopPage = () => {
       </div>
 
       <AiFab onOpen={() => setaiopen(true)}/>
-        
+      <AiModal open={aiopen} onClose={() => setaiopen(false)} />
+
       <CartFab count={cartCount} onOpen={() => setCartOpen(true)} />
       <CartModal
         open={cartOpen}

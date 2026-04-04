@@ -7,7 +7,7 @@ import AdminDashboard from "./pages/admin_pages/AdminDashboard";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
 import FloatingLoginButton from "./components/FloatingLoginButton";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 function App() {
   const [theme, setTheme] = useState(() => {
@@ -15,41 +15,53 @@ function App() {
     return saved === "dark" || saved === "light" ? saved : "dark";
   });
 
+  const UserLayout = ({ theme, setTheme }) => (
+      <>
+        <NavBar theme={theme} setTheme={setTheme} />
+        <Outlet />
+      </>
+    );
+
+  const AdminLayout = () => (
+      <>
+        <Outlet />
+      </>
+    );
+
   useEffect(() => {
     document.body.dataset.theme = theme;
     localStorage.setItem("theme", theme);
   }, [theme]);
 
   return (
-    <BrowserRouter>
-      <NavBar theme={theme} setTheme={setTheme} />
+    <div className="app">
+      <BrowserRouter>
+        <Routes>
 
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shop" element={<ShopPage />} />
+          <Route element={<UserLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route
+              path="/login"
+              element={
+                <>
+                  <LoginPage />
+                  <FloatingLoginButton />
+                </>
+              }
+            />
+          </Route>
 
-        <Route
-          path="/login"
-          element={
-            <div>
-              <LoginPage />
-              <FloatingLoginButton />
-            </div>
-          }
-        />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminLoginPage />} />
+            <Route path="dashboard" element={<AdminDashboard />} />
+          </Route>
 
-        <Route
-          path="/admin"
-          element={
-            <div>
-              <AdminLoginPage />
-            </div>
-          }
-        />
+          <Route path="*" element={<Navigate to="/" />} />
 
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      </Routes>
-    </BrowserRouter>
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
 

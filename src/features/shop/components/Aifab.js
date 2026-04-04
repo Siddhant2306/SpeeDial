@@ -1,5 +1,5 @@
 import React from "react";
-import aiBot from "./Robot-Bot 3D.gif";
+import aiBot from "../../../assets/Robot-Bot 3D.gif";
 
 const AIFab = ({ onOpen }) => {
   return (

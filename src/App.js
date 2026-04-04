@@ -28,6 +28,12 @@ function App() {
       </>
     );
 
+  const AdminProtectedRoute = ({ children }) => {
+  const isAdminLoggedIn = false; // TODO: Replace with actual authentication logic
+
+  return isAdminLoggedIn ? children : <Navigate to="/admin" />;
+  };
+
   useEffect(() => {
     document.body.dataset.theme = theme;
     localStorage.setItem("theme", theme);
@@ -54,7 +60,11 @@ function App() {
 
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminLoginPage />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
+            <Route path="dashboard" element={
+              <AdminProtectedRoute>
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            } />
           </Route>
 
           <Route path="*" element={<Navigate to="/" />} />

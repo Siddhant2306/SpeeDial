@@ -715,3 +715,105 @@ button:disabled {
   color: #ffb4b4;
   font-weight: 900;
 }
+
+ .bot-icon {
+   width: 100px;   /* 🔥 increased actual GIF size */
+  height: 105px;
+  object-fit: contain;
+}
+
+
+.ai-btn {
+  position: fixed;
+  bottom: 18px;
+  right: 90px;
+
+  width: 60px;
+  height: 60px;
+
+  border: none;
+  background: #000000;              /* 🔥 same as shop */
+  border-radius: 12px;           /* 🔥 same shape */
+  padding: 8px;
+
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(0,255,255,0.6); /* 🔥 same glow */
+  transition: all 0.3s ease;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.ai-btn:hover {
+  transform: scale(0.70);
+  box-shadow: 0 0 25px rgba(0, 255, 255, 1);
+}
+.ai-wrapper {
+  position: fixed;
+  bottom: 18px;
+  right: 90px;
+  z-index: 1000;
+}
+
+.ai-hover-text {
+  position: absolute;
+  bottom: 70px;   /* align with bot center */
+  right: -80px;    /* 👈 push box to LEFT of bot */
+
+  background: #000;
+  color: #00eaff;
+
+  font-size: 14px;
+  font-weight: 900;
+  padding: 10px 16px;
+
+  border-radius: 14px;
+  white-space: nowrap;
+
+  box-shadow:
+    0 0 10px rgba(0, 255, 255, 0.6),
+    0 0 20px rgba(0, 255, 255, 0.3);
+
+  animation: speediHeartbeat 4.2s infinite;
+
+}
+
+.ai-hover-text::after {
+ content: "";
+  position: absolute;
+  top: 50%;
+  right: 0px;   /* 👈 arrow on RIGHT */
+  transform: translateY(-50%);
+
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent transparent transparent #000;
+}
+
+@keyframes speediHeartbeat {
+  0% {
+    transform: translateX(-50%) scale(1);
+  }
+  14% {
+    transform: translateX(-50%) scale(1.12);
+  }
+  28% {
+    transform: translateX(-50%) scale(1);
+  }
+  42% {
+    transform: translateX(-50%) scale(1.14);
+  }
+  70% {
+    transform: translateX(-50%) scale(1);
+  }
+  100% {
+    transform: translateX(-50%) scale(1);
+  }
+}
+/* ===== SEND BUTTON FONT COLOR ===== */
+
+.aiChatModal .buy-btn {
+  color: #fdffff;   /* 👈 THIS IS FONT COLOR */
+  font-weight: 900;
+}

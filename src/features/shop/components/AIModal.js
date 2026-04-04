@@ -1,13 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
-import { getAiAgentDebugConfig, sendAiAgentMessage } from "../../../api/aiAgent";
+import { sendAiAgentMessage } from "../../../api/aiAgent";
+import "../../../css/AiChatUI.css";
 
 function makeId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
+const WELCOME_MESSAGE = "Hi! How can I help?";
+
 const AIModal = ({ open, onClose }) => {
   const [messages, setMessages] = useState(() => [
-    { id: makeId(), role: "assistant", content: "Hi! How can I help?" },
+    { id: makeId(), role: "assistant", content: WELCOME_MESSAGE },
   ]);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
@@ -23,20 +26,10 @@ const AIModal = ({ open, onClose }) => {
 
   useEffect(() => {
     if (!open) return;
-    endRef.current?.scrollIntoView({ behavior: "smooth", block: "end" });
+    endRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [open, messages.length, sending]);
 
   if (!open) return null;
-
-  const config = getAiAgentDebugConfig();
-
-  const handleClear = () => {
-    if (sending) return;
-    setError("");
-    setDraft("");
-    setMessages([{ id: makeId(), role: "assistant", content: "Hi! How can I help?" }]);
-    inputRef.current?.focus();
-  };
 
   const handleSend = async () => {
     const text = (draft || "").trim();
@@ -52,11 +45,13 @@ const AIModal = ({ open, onClose }) => {
     try {
       const reply = await sendAiAgentMessage(text);
       const assistantText = String(reply || "").trim() || "…";
+
       const assistantMessage = {
         id: makeId(),
         role: "assistant",
         content: assistantText,
       };
+
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (e) {
       const msg = e?.message || "Could not reach the AI agent.";
@@ -74,12 +69,19 @@ const AIModal = ({ open, onClose }) => {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal aiChatModal" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header relative">
-          <div>
-            <h3>AI Assistant</h3>
-            <div className="aiChatMeta" title={`Request field: ${config.requestField}`}>
-              {config.baseUrl}
-              {config.chatPath}
+        
+        {/* HEADER */}
+        <div className="aiChatHeader">
+          <div className="aiChatHeaderLeft">
+            <div className="aiAvatar"></div>
+
+            <div className="aiChatHeaderText">
+              <h3 className="aiChatTitle">AI Assistant</h3>
+
+              <div className="aiChatSubtext">
+                <span className="aiStatusDot"></span>
+                <span>Online</span>
+              </div>
             </div>
           </div>
 
@@ -91,27 +93,44 @@ const AIModal = ({ open, onClose }) => {
           </button>
         </div>
 
-        <div className="aiChatMessages" aria-live="polite">
+        {/* MESSAGES */}
+        <div className="aiChatMessages">
           {messages.map((m) => (
-            <div key={m.id} className={`aiChatMessage ${m.role}`}>
-              <div className="aiChatBubble">{m.content}</div>
+            <div key={m.id} className={`aiChatMessageRow ${m.role}`}>
+              {m.role === "assistant" && <div className="aiMiniAvatar"></div>}
+
+              <div className={`aiChatMessage ${m.role}`}>
+                <div className="aiChatBubble">{m.content}</div>
+              </div>
             </div>
           ))}
+
           {sending && (
-            <div className="aiChatMessage assistant">
-              <div className="aiChatBubble">Typing…</div>
+            <div className="aiChatMessageRow assistant">
+              <div className="aiMiniAvatar"></div>
+
+              <div className="aiChatMessage assistant">
+                <div className="aiChatBubble aiTypingBubble">
+                  <span className="aiTypingDot"></span>
+                  <span className="aiTypingDot"></span>
+                  <span className="aiTypingDot"></span>
+                </div>
+              </div>
             </div>
           )}
+
           <div ref={endRef} />
         </div>
 
+        {/* ERROR */}
         {error && <div className="aiChatError">{error}</div>}
 
+        {/* INPUT */}
         <div className="aiChatComposer">
           <textarea
             ref={inputRef}
             className="aiChatInput"
-            placeholder="Type a message…"
+            placeholder="Type a message..."
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {
@@ -131,11 +150,9 @@ const AIModal = ({ open, onClose }) => {
             >
               Send
             </button>
-            <button className="buy-btn secondary" onClick={handleClear} disabled={sending}>
-              Clear
-            </button>
           </div>
         </div>
+
       </div>
     </div>
   );

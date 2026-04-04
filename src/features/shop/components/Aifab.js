@@ -1,11 +1,16 @@
 import React from "react";
+import aiBot from "./Robot-Bot 3D.gif";
 
-const AiFab = ({onOpen }) => {
+const AIFab = ({ onOpen }) => {
   return (
-    <button className="aiFab" onClick={onOpen}>
-      <span className="aifabIcon">🌟</span>
-    </button>
+    <div className="ai-wrapper">
+      <div className="ai-hover-text">⚡ SPEEDI HERE !</div>
+
+      <button className="ai-btn" onClick={onOpen}>
+        <img src={aiBot} alt="AI Bot" className="bot-icon" />
+      </button>
+    </div>
   );
 };
 
-export default AiFab;
+export default AIFab;

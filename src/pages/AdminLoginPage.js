@@ -9,12 +9,6 @@ const AdminLoginPage = () => {
   const [captcha, setCaptcha] = useState("");
   const [captchaInput, setCaptchaInput] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // ✅ ADDED: fake admin credentials
-  //const ADMIN_EMAIL = "admin@gmail.com";
-  //const ADMIN_USERNAME = "admin123";
-  //const ADMIN_PASSWORD = "1234";
-
   // Generate captcha
   const generateCaptcha = () => {
     const chars =
@@ -45,25 +39,19 @@ const AdminLoginPage = () => {
         throw new Error("Captcha does not match");
       }
 
-      const data = await adminValidate({ email: safeEmail, username: safeUsername, password: safepassword });
+      const data = await adminValidate(
+        { 
+          email: safeEmail,
+          username: safeUsername, 
+          password: safepassword 
+        });
 
-      // ✅ ADDED: frontend-only admin credential check
-      if (
-        safeEmail !== data.email ||
-        safeUsername !== data.username ||
-        safepassword !== data.password ||
-        safeCaptchaInput !== captcha
-      ) {
-        throw new Error("Invalid admin email, username, or password");
-      }
-
-      // ✅ ADDED: save admin login state
-      localStorage.setItem("isAdminLoggedIn", "true");
-      localStorage.setItem("adminEmail", safeEmail);
-      localStorage.setItem("adminUsername", safeUsername);
+        if (!data) {
+          throw new Error("Invalid response");
+        }
 
       // ✅ CHANGED: success alert
-      alert(`✅ Admin Logged in (${safeUsername}, ${safeEmail})`);
+      alert(`✅ Admin Logged in (${safeUsername})`);
 
       // ✅ ADDED: clear fields after success
       setEmail("");

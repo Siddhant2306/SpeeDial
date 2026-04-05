@@ -1,0 +1,278 @@
+/* ===== AI Assistant Header + Avatar UI ===== */
+
+.aiChatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 255, 255, 0.14);
+}
+
+.aiChatHeaderLeft {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.aiAvatar {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(0, 255, 255, 0.35), transparent 55%),
+    linear-gradient(135deg, rgba(0, 255, 255, 0.18), rgba(255, 0, 255, 0.22)),
+    rgba(10, 14, 28, 0.92);
+  border: 1px solid rgba(0, 255, 255, 0.28);
+  box-shadow:
+    0 0 12px rgba(0, 255, 255, 0.16),
+    0 0 26px rgba(255, 0, 255, 0.08),
+    inset 0 0 18px rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  animation: aiAvatarFloat 3s ease-in-out infinite;
+}
+
+.aiAvatar::before {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  background: conic-gradient(
+    from 180deg,
+    transparent,
+    rgba(0, 255, 255, 0.18),
+    transparent,
+    rgba(255, 0, 255, 0.16),
+    transparent
+  );
+  animation: aiAvatarSpin 4s linear infinite;
+}
+
+.aiAvatar::after {
+  content: "🤖";
+  position: relative;
+  z-index: 1;
+  font-size: 22px;
+  filter: drop-shadow(0 0 8px rgba(0, 255, 255, 0.3));
+}
+
+@keyframes aiAvatarSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes aiAvatarFloat {
+  0%, 100% {
+    transform: translateY(0px);
+    box-shadow:
+      0 0 12px rgba(0, 255, 255, 0.16),
+      0 0 26px rgba(255, 0, 255, 0.08),
+      inset 0 0 18px rgba(255, 255, 255, 0.04);
+  }
+  50% {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 18px rgba(0, 255, 255, 0.22),
+      0 0 34px rgba(255, 0, 255, 0.12),
+      inset 0 0 18px rgba(255, 255, 255, 0.05);
+  }
+}
+
+.aiChatHeaderText {
+  min-width: 0;
+}
+
+.aiChatTitle {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #eafcff;
+  text-shadow:
+    0 0 8px rgba(0, 255, 255, 0.18),
+    0 0 14px rgba(255, 0, 255, 0.08);
+}
+
+.aiChatSubtext {
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a9b8d6;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.aiStatusDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #44ff99;
+  box-shadow:
+    0 0 8px rgba(68, 255, 153, 0.8),
+    0 0 14px rgba(68, 255, 153, 0.35);
+  animation: aiPulseDot 1.8s infinite ease-in-out;
+  flex-shrink: 0;
+}
+
+@keyframes aiPulseDot {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.18);
+    opacity: 0.8;
+  }
+}
+
+.aiMiniAvatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  color: #fff;
+  font-size: 14px;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(0, 255, 255, 0.22), transparent 55%),
+    linear-gradient(135deg, rgba(0, 255, 255, 0.12), rgba(255, 0, 255, 0.16)),
+    rgba(12, 16, 30, 0.9);
+  border: 1px solid rgba(0, 255, 255, 0.18);
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.08);
+}
+
+.aiMiniAvatar::before {
+  content: "🤖";
+  font-size: 14px;
+}
+
+.aiChatMessageRow {
+  display: flex;
+  align-items: flex-end;
+}
+
+.aiChatMessageRow.assistant {
+  justify-content: flex-start;
+}
+
+.aiChatMessageRow.user {
+  justify-content: flex-end;
+}
+
+.aiTypingBubble {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 64px;
+}
+
+.aiTypingDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #8fe8ff;
+  box-shadow: 0 0 8px rgba(143, 232, 255, 0.4);
+  animation: aiTypingBounce 1.2s infinite ease-in-out;
+}
+
+.aiTypingDot:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.aiTypingDot:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes aiTypingBounce {
+  0%, 80%, 100% {
+    transform: translateY(0);
+    opacity: 0.55;
+  }
+  40% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+/* ===== UPDATED SEND BUTTON (GLOW + CENTER + BOLD) ===== */
+
+.aiChatModal .buy-btn {
+  width: 100%;
+  height: 48px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-weight: 900;
+  font-size: 15px;
+  letter-spacing: 1px;
+
+  color: #ffffff;
+
+  border:  #ffffff;
+  border-radius: 14px;
+
+  background: linear-gradient(135deg, #8b5cf6, #8b5cf6);
+
+  cursor: pointer;
+
+  box-shadow:
+    0 0 10px rgba(0, 255, 255, 0.5),
+    0 0 20px rgba(0, 255, 255, 0.3),
+    0 0 40px rgba(0, 255, 255, 0.15);
+
+  transition: all 0.25s ease;
+}
+
+/* hover */
+.aiChatModal .buy-btn:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+
+  box-shadow:
+    0 0 15px rgba(0, 255, 255, 0.8),
+    0 0 30px rgba(0, 255, 255, 0.5),
+    0 0 60px rgba(0, 255, 255, 0.25);
+}
+
+/* click */
+.aiChatModal .buy-btn:active {
+  transform: scale(0.96);
+}
+
+/* disabled */
+.aiChatModal .buy-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* 🔥 optional pulse animation */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 10px rgba(0,255,255,0.4); }
+  50% { box-shadow: 0 0 25px rgba(0,255,255,0.8); }
+  100% { box-shadow: 0 0 10px rgba(0,255,255,0.4); }
+}
+
+.aiChatModal .buy-btn {
+  animation: pulseGlow 2s infinite;
+}

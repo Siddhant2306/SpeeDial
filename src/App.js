@@ -3,19 +3,36 @@ import { useEffect, useState } from "react";
 import NavBar from "./components/NavBar";
 import LoginPage from "./pages/LoginPage";
 import AdminLoginPage from "./pages/AdminLoginPage";
+import AdminDashboard from "./pages/admin_pages/AdminDashboard";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
 import FloatingLoginButton from "./components/FloatingLoginButton";
-
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 
 function App() {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem("theme");
-    // Default to dark neon if the user hasn’t chosen yet
     return saved === "dark" || saved === "light" ? saved : "dark";
   });
+
+  const UserLayout = ({ theme, setTheme }) => (
+      <>
+        <NavBar theme={theme} setTheme={setTheme} />
+        <Outlet />
+      </>
+    );
+
+  const AdminLayout = () => (
+      <>
+        <Outlet />
+      </>
+    );
+
+  const AdminProtectedRoute = ({ children }) => {
+  const isAdminLoggedIn = false; // TODO: Replace with actual authentication logic
+
+  return isAdminLoggedIn ? children : <Navigate to="/admin" />;
+  };
 
   useEffect(() => {
     document.body.dataset.theme = theme;
@@ -23,34 +40,39 @@ function App() {
   }, [theme]);
 
   return (
-    <BrowserRouter>
-      <NavBar theme={theme} setTheme={setTheme} />
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/shop" element={<ShopPage />} />
-        <Route
-          path="/login"
-          element={
-            <div>
-              <LoginPage />
-              <FloatingLoginButton />
-            </div>
-          }
-        />
+    <div className="app">
+      <BrowserRouter>
+        <Routes>
 
-        {/* ✅ Admin Login (ADD THIS) */}
-        <Route
-          path="/admin"
-          element={
-            <div>
-              <AdminLoginPage />
+          <Route element={<UserLayout />}>
+            <Route path="/" element={<HomePage />} />
+            <Route path="/shop" element={<ShopPage />} />
+            <Route
+              path="/login"
+              element={
+                <>
+                  <LoginPage />
+                  <FloatingLoginButton />
+                </>
+              }
+            />
+          </Route>
 
-            </div>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminLoginPage />} />
+            <Route path="dashboard" element={
+              <AdminProtectedRoute>
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            } />
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" />} />
+
+        </Routes>
+      </BrowserRouter>
+    </div>
   );
 }
-     
+
 export default App;

@@ -54,7 +54,7 @@ const AdminLoginPage = () => {
       }
 
       // ✅ ADDED: save admin login state
-      localStorage.setItem("admin", "true");
+      localStorage.setItem("isAdminLoggedIn", "true");
       localStorage.setItem("adminEmail", safeEmail);
       localStorage.setItem("adminUsername", safeUsername);
 
@@ -69,7 +69,7 @@ const AdminLoginPage = () => {
       generateCaptcha();
 
       // ✅ ADDED: redirect to admin dashboard
-      window.location.href = "/admin-dashboard";
+      window.location.href = "/admin/dashboard";
     } catch (err) {
       alert(`❌ ${err.message}`);
       setPassword(""); // ✅ ADDED

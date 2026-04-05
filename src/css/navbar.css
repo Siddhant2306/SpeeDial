@@ -41,7 +41,11 @@ nav ul {
     margin: 0;
     padding: 0;
 }
-
+/* 🔥 FIX ALIGNMENT */
+nav ul li {
+    display: flex;
+    align-items: center;
+}
 /* Navbar Links */
 nav ul li a {
     text-decoration: none;
@@ -57,6 +61,16 @@ nav ul li a {
 nav ul li a:hover {
     background: color-mix(in srgb, var(--accent) 20%, transparent);
 }
+/* 🔥 SMALL PROFILE ICON (FIXED) */
+.nav-profile-icon {
+    width: 22px;      /* 🔥 small like text */
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    object-fit: cover;
+    vertical-align: middle;
+}
+
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
@@ -75,4 +89,56 @@ nav ul li a:hover {
         gap: 6px;
         flex-wrap: wrap;
     }
+}
+/* (Keep your old styles below untouched) */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 20px;
+  background: #111;
+  color: white;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-btn,
+.logout-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #00bcd4;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.login-btn:hover,
+.logout-btn:hover {
+  opacity: 0.9;
+}
+
+.profile-section {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ❌ OLD BIG ICON (KEEP BUT NOT USED NOW) */
+.profile-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  cursor: pointer;
+  object-fit: cover;
+  border: 2px solid white;
 }

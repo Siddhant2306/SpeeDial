@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "../css/login.css";
 import { loginUser, registerUser } from "../api/userauth";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [mode, setMode] = useState("login");
@@ -9,27 +10,53 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const navigate = useNavigate();
+
   const submit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const safeName = name.trim();
       const safeEmail = email.trim().toLowerCase();
+      const safePassword = password.trim();
 
-      const data =
-        mode === "signup"
-          ? await registerUser({ name: safeName, email: safeEmail, password })
-          : await loginUser({ email: safeEmail, password });
+      let response;
+      let userData;
 
-      alert(
-        mode === "signup"
-          ? `✅ Account created (user id: ${data.user_id})`
-          : `✅ Logged in (user id: ${data.user_id})`
-      );
+      if (mode === "signup") {
+        response = await registerUser({
+          name: safeName,
+          email: safeEmail,
+          password: safePassword,
+        });
 
+        userData = response.user;
+
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        alert("✅ Account created successfully");
+      } else {
+        response = await loginUser({
+          email: safeEmail,
+          password: safePassword,
+        });
+
+        userData = response.user;
+
+        localStorage.setItem("user", JSON.stringify(userData));
+
+        alert("✅ Logged in successfully");
+      }
+
+      setName("");
+      setEmail("");
       setPassword("");
+
+      navigate("/");
+      window.location.reload();
     } catch (err) {
-      alert(`❌ ${err.message}`);
+      alert(`❌ ${err.response?.data?.message || err.message}`);
     } finally {
       setLoading(false);
     }
@@ -41,8 +68,8 @@ const LoginPage = () => {
         <h2>{mode === "signup" ? "Create account" : "Login"}</h2>
         <p className="muted">
           {mode === "signup"
-            ? "Sign up to save your user in MySQL"
-            : "Login using the user saved in MySQL"}
+            ? "Create your account"
+            : "Login with your registered account"}
         </p>
 
         <form onSubmit={submit} className="login-form">
@@ -82,11 +109,12 @@ const LoginPage = () => {
           </label>
 
           <button className="primary" disabled={loading}>
-            {loading ? "Please wait…" : mode === "signup" ? "Sign up" : "Login"}
+            {loading ? "Please wait..." : mode === "signup" ? "Sign up" : "Login"}
           </button>
         </form>
 
         <button
+          type="button"
           className="linkish"
           onClick={() => setMode((m) => (m === "login" ? "signup" : "login"))}
         >

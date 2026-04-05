@@ -26,7 +26,6 @@ const LoginPage = () => {
           ? `✅ Account created (user id: ${data.user_id})`
           : `✅ Logged in (user id: ${data.user_id})`
       );
-
       setPassword("");
     } catch (err) {
       alert(`❌ ${err.message}`);

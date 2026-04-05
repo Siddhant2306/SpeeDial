@@ -282,19 +282,17 @@ button:disabled {
   height: 60px;
   border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--accent-2) 28%, var(--border));
-  background:
-    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 55%),
-    linear-gradient(180deg, #0b0e16, #000);
-  color: rgb(247, 245, 245);
+  background: black,
+    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 55%);
   cursor: pointer;
-  box-shadow: 0 20px 70px rgba(0,0,0,0.55);
+  box-shadow: 0 0 15px rgba(0,255,255,0.6);
   transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
 }
 
 .cartFab:hover {
-  transform: translateY(-2px);
+  transform: scale(0.70);
   filter: brightness(1.06);
-  box-shadow: 0 26px 90px rgba(0,0,0,0.70);
+  box-shadow: 0 0 15px rgba(0,255,255,0.6);
 }
 .cartFab:active {
   transform: scale(0.95);

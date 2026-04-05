@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "../css/login.css";
-import { loginUser, registerUser } from "../api/auth";
+import { loginUser, registerUser } from "../api/userauth";
 
 const LoginPage = () => {
   const [mode, setMode] = useState("login");

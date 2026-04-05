@@ -10,6 +10,11 @@ const AdminLoginPage = () => {
   const [captchaInput, setCaptchaInput] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // ✅ ADDED: fake admin credentials
+  const ADMIN_EMAIL = "admin@gmail.com";
+  const ADMIN_USERNAME = "admin123";
+  const ADMIN_PASSWORD = "1234";
+
   // Generate captcha
   const generateCaptcha = () => {
     const chars =
@@ -29,28 +34,50 @@ const AdminLoginPage = () => {
     e.preventDefault();
     setLoading(true);
 
-   try {
-  const safeEmail = email.trim().toLowerCase();
-  const safeUsername = username.trim();
+    try {
+      const safeEmail = email.trim().toLowerCase();
+      const safeUsername = username.trim();
+      const safeCaptchaInput = captchaInput.trim();
 
-  // CAPTCHA check
-  if (captchaInput !== captcha) {
-    throw new Error("Captcha does not match");
-  }
+      // ✅ CHANGED: CAPTCHA check
+      if (safeCaptchaInput !== captcha) {
+        throw new Error("Captcha does not match");
+      }
 
-  // 👉 Use safeEmail here (FIX)
-  alert(`✅ Admin Logged in (${safeUsername}, ${safeEmail})`);
+      // ✅ ADDED: frontend-only admin credential check
+      if (
+        safeEmail !== ADMIN_EMAIL ||
+        safeUsername !== ADMIN_USERNAME ||
+        password !== ADMIN_PASSWORD
+      ) {
+        throw new Error("Invalid admin email, username, or password");
+      }
 
-  setPassword("");
-  setCaptchaInput("");
-  generateCaptcha();
+      // ✅ ADDED: save admin login state
+      localStorage.setItem("admin", "true");
+      localStorage.setItem("adminEmail", safeEmail);
+      localStorage.setItem("adminUsername", safeUsername);
 
-} catch (err) {
-  alert(`❌ ${err.message}`);
-  generateCaptcha();
-} finally {
-  setLoading(false);
-}
+      // ✅ CHANGED: success alert
+      alert(`✅ Admin Logged in (${safeUsername}, ${safeEmail})`);
+
+      // ✅ ADDED: clear fields after success
+      setEmail("");
+      setUsername("");
+      setPassword("");
+      setCaptchaInput("");
+      generateCaptcha();
+
+      // ✅ ADDED: redirect to admin dashboard
+      window.location.href = "/admin-dashboard";
+    } catch (err) {
+      alert(`❌ ${err.message}`);
+      setPassword(""); // ✅ ADDED
+      setCaptchaInput(""); // ✅ ADDED
+      generateCaptcha();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

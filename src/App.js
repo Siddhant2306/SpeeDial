@@ -29,10 +29,10 @@ function App(){
     );
 
   const AdminProtectedRoute = ({ children }) => {
-  const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
-  if (isAdminLoggedIn === "true") {
-    return children;
-  }
+    const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
+    if (isAdminLoggedIn === "true") {
+     return children;
+    }
 
   return <Navigate to="/admin" replace />;
 };

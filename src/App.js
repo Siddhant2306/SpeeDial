@@ -15,7 +15,7 @@ function App(){
     return saved === "dark" || saved === "light" ? saved : "dark";
   });
 
-  const UserLayout = ({ theme, setTheme }) => (
+  const UserLayout = () => (
       <>
         <NavBar theme={theme} setTheme={setTheme} />
         <Outlet />

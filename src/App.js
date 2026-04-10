@@ -9,13 +9,13 @@ import ShopPage from "./pages/ShopPage";
 import FloatingLoginButton from "./components/FloatingLoginButton";
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 
-function App() {
+function App(){
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem("theme");
     return saved === "dark" || saved === "light" ? saved : "dark";
   });
 
-  const UserLayout = ({ theme, setTheme }) => (
+  const UserLayout = () => (
       <>
         <NavBar theme={theme} setTheme={setTheme} />
         <Outlet />
@@ -29,10 +29,14 @@ function App() {
     );
 
   const AdminProtectedRoute = ({ children }) => {
-  const isAdminLoggedIn = false; // TODO: Replace with actual authentication logic
+    const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
+    if (isAdminLoggedIn === "true") {
+     return children;
+    }
 
-  return isAdminLoggedIn ? children : <Navigate to="/admin" />;
-  };
+  return <Navigate to="/admin" replace />;
+};
+
 
   useEffect(() => {
     document.body.dataset.theme = theme;

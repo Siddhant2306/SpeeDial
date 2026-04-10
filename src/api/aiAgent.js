@@ -14,28 +14,6 @@ function getRequestField() {
   return raw || "message";
 }
 
-function getMessageFromResponse(data) {
-  if (typeof data === "string") return data;
-  if (!data || typeof data !== "object") return "";
-
-  // Common shapes
-  const direct =
-    data.reply ??
-    data.response ??
-    data.answer ??
-    data.text ??
-    data.message ??
-    data.output ??
-    data.result;
-  if (typeof direct === "string") return direct;
-
-  // OpenAI-compatible
-  const choiceContent = data?.choices?.[0]?.message?.content ?? data?.choices?.[0]?.text;
-  if (typeof choiceContent === "string") return choiceContent;
-
-  return "";
-}
-
 function getErrorMessage(res, data, text) {
   const fromJson = data?.error || data?.message;
   if (typeof fromJson === "string" && fromJson.trim()) return fromJson.trim();
@@ -45,35 +23,75 @@ function getErrorMessage(res, data, text) {
 
 export async function sendAiAgentMessage(message) {
   const trimmed = String(message ?? "").trim();
-  if (!trimmed) return "";
+  if (!trimmed) return null;
 
-  const baseUrl = getAiAgentBaseUrl();
-  const url = `${baseUrl}${getChatPath()}`;
-  const body = { [getRequestField()]: trimmed };
+  const userId = localStorage.getItem("user_id");
+  if (!userId) throw new Error("User not logged in");
 
-  const res = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  });
+  const url = `${getAiAgentBaseUrl()}${getChatPath()}`;
+  const body = {                                 // request payload structure is { [requestField]: message, user_id: ... }
+    [getRequestField()]: trimmed,
+    user_id: userId,
+  };
 
-  const text = await res.text();
-  const data = (() => {
-    try {
-      return JSON.parse(text);
-    } catch {
-      return null;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const data = await res.json().catch(() => null);
+
+    if (!res.ok) {
+      // Use your existing helper to extract the best error string
+      const errorText = getErrorMessage(res, data, "Network response was not ok");
+      throw new Error(errorText);
     }
-  })();
 
-  if (!res.ok) {
-    throw new Error(getErrorMessage(res, data, text));
+    // Return a lightly-normalized object for the UI components.
+    // Supports both:
+    // - { type, message, data }
+    // - { reply: { type, message, data } }  (speedi_ai_bot backend json structure)
+    let payload = data;
+    if (payload && typeof payload === "object" && "reply" in payload) {
+      payload = payload.reply;
+    }
+
+    if (typeof payload === "string") {
+      const text = payload.trim();
+      return { type: "message", message: text, data: text };
+    }
+
+    const rawType = payload?.type ?? data?.type ?? "message";
+    const type = String(rawType || "message").trim() || "message";
+
+    let messageText = payload?.message;
+    const responseData =
+      payload?.data ??
+      payload?.reply ??
+      payload?.response ??
+      payload?.answer ??
+      payload?.text;
+
+    if (typeof messageText !== "string") {
+      messageText = "";
+    }
+
+    if (!messageText.trim() && typeof responseData === "string") {
+      messageText = responseData;
+    }
+
+    return {
+      type,
+      message: messageText,
+      data: responseData,
+    };
+  } catch (err) {
+    console.error("AI Agent Error:", err);
+    throw err;
   }
-
-  const msg = getMessageFromResponse(data);
-  return (msg || text || "").trim();
 }
-
 export function getAiAgentDebugConfig() {
   return {
     baseUrl: getAiAgentBaseUrl(),

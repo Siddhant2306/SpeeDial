@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../css/login.css";
-// import { adminLogin } from "../api/admin"; // optional
+import {adminValidate } from "../api/adminauth"; 
 
 const AdminLoginPage = () => {
   const [email, setEmail] = useState("");
@@ -11,9 +11,9 @@ const AdminLoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   // ✅ ADDED: fake admin credentials
-  const ADMIN_EMAIL = "admin@gmail.com";
-  const ADMIN_USERNAME = "admin123";
-  const ADMIN_PASSWORD = "1234";
+  //const ADMIN_EMAIL = "admin@gmail.com";
+  //const ADMIN_USERNAME = "admin123";
+  //const ADMIN_PASSWORD = "1234";
 
   // Generate captcha
   const generateCaptcha = () => {
@@ -37,6 +37,7 @@ const AdminLoginPage = () => {
     try {
       const safeEmail = email.trim().toLowerCase();
       const safeUsername = username.trim();
+      const safepassword = password; // Passwords may contain spaces, so we don't trim them
       const safeCaptchaInput = captchaInput.trim();
 
       // ✅ CHANGED: CAPTCHA check
@@ -44,11 +45,14 @@ const AdminLoginPage = () => {
         throw new Error("Captcha does not match");
       }
 
+      const data = await adminValidate({ email: safeEmail, username: safeUsername, password: safepassword });
+
       // ✅ ADDED: frontend-only admin credential check
       if (
-        safeEmail !== ADMIN_EMAIL ||
-        safeUsername !== ADMIN_USERNAME ||
-        password !== ADMIN_PASSWORD
+        safeEmail !== data.email ||
+        safeUsername !== data.username ||
+        safepassword !== data.password ||
+        safeCaptchaInput !== captcha
       ) {
         throw new Error("Invalid admin email, username, or password");
       }
@@ -59,7 +63,7 @@ const AdminLoginPage = () => {
       localStorage.setItem("adminUsername", safeUsername);
 
       // ✅ CHANGED: success alert
-      alert(`✅ Admin Logged in (${safeUsername}, ${safeEmail})`);
+      alert(`✅ Admin Logged in (${safeUsername})`);
 
       // ✅ ADDED: clear fields after success
       setEmail("");
@@ -69,7 +73,7 @@ const AdminLoginPage = () => {
       generateCaptcha();
 
       // ✅ ADDED: redirect to admin dashboard
-      window.location.href = "/admin-dashboard";
+      window.location.href = "/admin/dashboard";
     } catch (err) {
       alert(`❌ ${err.message}`);
       setPassword(""); // ✅ ADDED

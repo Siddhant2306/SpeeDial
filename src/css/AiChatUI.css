@@ -276,3 +276,31 @@
 .aiChatModal .buy-btn {
   animation: pulseGlow 2s infinite;
 }
+
+.aiChatBubble {
+  min-width: 50px;
+  min-height: 20px;
+}
+
+.aiProductGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 10px;
+  width: 100%;
+}
+
+.aiProductCard {
+  width: 120px;
+  padding: 8px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--surface-solid) 92%, transparent);
+  border: 1px solid var(--border);
+  color: var(--text);
+  text-align: center;
+}
+
+.aiProductImg {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+}

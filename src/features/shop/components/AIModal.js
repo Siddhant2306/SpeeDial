@@ -8,7 +8,52 @@ function makeId() {
 
 const WELCOME_MESSAGE = "Hi! How can I help?";
 
-const AIModal = ({ open, onClose }) => {
+function toPositiveInt(value, fallback = 1) {
+  const n = Number.parseInt(String(value ?? ""), 10);
+  if (!Number.isFinite(n) || n < 1) return fallback;
+  return n;
+}
+
+function normalizeCartItems(rawData) {
+  let cart = rawData;
+
+  if (Array.isArray(cart)) {
+    const withCart = cart.find((x) => x && typeof x === "object" && "cart" in x);
+    if (withCart && withCart.cart != null) cart = withCart.cart;
+  } else if (cart && typeof cart === "object" && "cart" in cart) {
+    cart = cart.cart;
+  }
+
+  if (Array.isArray(cart) && cart.length === 1 && Array.isArray(cart[0])) {
+    cart = cart[0];
+  }
+
+  if (!Array.isArray(cart)) return [];
+
+  return cart
+    .map((it) => {
+      if (it == null) return null;
+      if (typeof it === "string") {
+        const name = it.trim();
+        return name ? { item: name, quantity: 1 } : null;
+      }
+      if (typeof it !== "object") return null;
+
+      const name = String(it.item || it.name || it.product || it.title || "").trim();
+      const quantity = toPositiveInt(it.quantity ?? it.qty ?? it.count ?? 1, 1);
+      const normalizedItem = name || String(it.item || it.name || "").trim();
+      if (!normalizedItem) return null;
+
+      return {
+        ...it,
+        item: normalizedItem,
+        quantity,
+      };
+    })
+    .filter(Boolean);
+}
+
+const AIModal = ({ open, onClose, onAddToCart }) => {
   const [messages, setMessages] = useState(() => [
     { id: makeId(), role: "assistant", content: WELCOME_MESSAGE },
   ]);
@@ -31,39 +76,127 @@ const AIModal = ({ open, onClose }) => {
 
   if (!open) return null;
 
-  const handleSend = async () => {
-    const text = (draft || "").trim();
-    if (!text || sending) return;
+      const handleSend = async () => {
+      const text = (draft || "").trim();
+      if (!text || sending) return;
 
-    setDraft("");
-    setError("");
-    setSending(true);
+      setDraft("");
+      setSending(true);
 
-    const userMessage = { id: makeId(), role: "user", content: text };
-    setMessages((prev) => [...prev, userMessage]);
+      const userMessage = { id: makeId(), role: "user", content: text };
+      setMessages((prev) => [...prev, userMessage]);
 
-    try {
-      const reply = await sendAiAgentMessage(text);
-      const assistantText = String(reply || "").trim() || "…";
+      try {
+        const res = await sendAiAgentMessage(text);
+        const type = (res.type || "").trim().toLowerCase();
+        let fallbackText =
+          (res.message ||
+            (typeof res.data === "string" ? res.data : "") ||
+            "").trim();
 
-      const assistantMessage = {
-        id: makeId(),
-        role: "assistant",
-        content: assistantText,
-      };
+        if (!fallbackText && res.data && typeof res.data === "object") {
+          try {
+            fallbackText = JSON.stringify(res.data);
+          } catch (err) {
+            // ignore
+          }
+        }
 
-      setMessages((prev) => [...prev, assistantMessage]);
-    } catch (e) {
-      const msg = e?.message || "Could not reach the AI agent.";
-      setError(msg);
-      setMessages((prev) => [
-        ...prev,
-        { id: makeId(), role: "assistant", content: `Error: ${msg}` },
-      ]);
-    } finally {
-      setSending(false);
-      inputRef.current?.focus();
-    }
+        if (fallbackText.length > 2000) {
+          fallbackText = `${fallbackText.slice(0, 2000)}…`;
+        }
+
+        // =========================
+        // 💬 MESSAGE (Standard Chat)
+        // =========================
+        if (type === "message") {
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: makeId(),
+              role: "assistant",
+              content: fallbackText || "…",
+            },
+          ]);
+          return;
+        }
+
+        // =========================
+        // 🖼️ PRODUCTS
+        // =========================
+        if (type === "products") {
+          const items = Array.isArray(res.data)
+            ? res.data
+            : res.data && typeof res.data === "object"
+              ? res.data.items || res.data.products || []
+              : [];
+
+          setMessages((prev) => [
+            ...prev,
+            {
+              id: makeId(),
+              role: "assistant",
+              content: res.message || fallbackText || "Here are some items:",
+            },
+            {
+              id: makeId(),
+              role: "assistant",
+              type: "products", 
+              items: Array.isArray(items) ? items : [],
+            },
+          ]);
+          return;
+        }
+
+        // =========================
+        // 🛒 CART
+        // =========================
+        if (type === "cart") {
+          const cartItems = normalizeCartItems(res.data);
+
+          // 1. Update Chat UI
+          setMessages((prev) => [
+            ...prev,
+            { id: makeId(), role: "assistant", content: res.message || fallbackText || "Updated your cart." },
+            { 
+              id: makeId(), 
+              role: "assistant", 
+              type: "cart", 
+              items: cartItems,
+            },
+          ]);
+
+          // 2. 🔥 Update the Real Shop Cart
+          if (onAddToCart) {
+            cartItems.forEach((aiItem) => onAddToCart(aiItem));
+          }
+
+          return;
+        }
+
+        // =========================
+        // 🧩 FALLBACK (Unknown type)
+        // =========================
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: makeId(),
+            role: "assistant",
+            content: fallbackText || "Done.",
+          },
+        ]);
+      } catch (e) {
+        setMessages((prev) => [
+          ...prev,
+          {
+            id: makeId(),
+            role: "assistant",
+            content: "Error: " + (e.message || "AI failed"),
+          },
+        ]);
+      } finally {
+        setSending(false);
+      }
   };
 
   return (
@@ -100,7 +233,35 @@ const AIModal = ({ open, onClose }) => {
               {m.role === "assistant" && <div className="aiMiniAvatar"></div>}
 
               <div className={`aiChatMessage ${m.role}`}>
-                <div className="aiChatBubble">{m.content}</div>
+                <div className="aiChatBubble">
+                  {/* Check type: case-insensitive to be safe */}
+                  {m.type?.toLowerCase() === "products" || m.type?.toLowerCase() === "cart" ? (
+                    <div className="aiProductGrid">
+                      {/* Defensive mapping: Ensure items exists and is an array */}
+                      {Array.isArray(m.items) && m.items.length > 0 ? (
+                        m.items.map((item, i) => (
+                          <div key={i} className="aiProductCard">
+                            <img
+                              src={item.image || item.image_url || "https://via.placeholder.com/50"}
+                              className="aiProductImg"
+                              alt={item.name || "product"}
+                            />
+                            {/* Fix: Check both 'name' and 'item' keys */}
+                            <div className="aiProductName">{item.name || item.item || "Unknown Product"}</div>
+                            
+                            {item.price && <div className="aiProductPrice">{item.price}</div>}
+                            {item.quantity && <div className="qty">Qty: {item.quantity}</div>}
+                          </div>
+                        ))
+                      ) : (
+                        <div className="aiChatText italic">No items found.</div>
+                      )}
+                    </div>
+                  ) : (
+                    /* Standard text bubble fallback */
+                    <div className="aiChatText">{m.content || "no"}</div>
+                  )}
+                </div>
               </div>
             </div>
           ))}

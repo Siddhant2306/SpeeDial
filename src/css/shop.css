@@ -282,8 +282,7 @@ button:disabled {
   height: 60px;
   border-radius: 18px;
   border: 1px solid color-mix(in srgb, var(--accent-2) 28%, var(--border));
-  background: black,
-    radial-gradient(circle at 30% 20%, color-mix(in srgb, var(--accent) 45%, transparent), transparent 55%);
+  background: black;
   cursor: pointer;
   box-shadow: 0 0 15px rgba(0,255,255,0.6);
   transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;

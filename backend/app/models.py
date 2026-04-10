@@ -1,14 +1,21 @@
 from .extensions import db
 from datetime import datetime
 
-
 class Order(db.Model):
     __tablename__ = "orders"
 
     id = db.Column(db.Integer, primary_key=True)
     item = db.Column(db.String(50), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "item": self.item,
+            "quantity": self.quantity,
+            "user_id": self.user_id
+        }
 
 class User(db.Model):
     __tablename__ = "users"

@@ -32,9 +32,16 @@ const CartModal = ({
       alert("Please enter your UPI ID");
       return;
     }
+    
+    const userId = localStorage.getItem("user_id");
+
+    if (!userId) {
+      alert("User not logged in");
+      return;
+    }
 
     if (onCheckout) {
-      onCheckout({ address, paymentMethod, upiId });
+      onCheckout({ address, paymentMethod, upiId, userId: userId });
     }
 
     // reset + close

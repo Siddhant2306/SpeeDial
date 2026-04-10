@@ -15,7 +15,6 @@ bp = Blueprint("products", __name__)
 
 
 @bp.route("/api/products", methods=["GET"], strict_slashes=False)
-@require_api_key
 def list_products():
     search = (request.args.get("search") or "").strip()
     category = (request.args.get("category") or "").strip()
@@ -42,7 +41,6 @@ def list_products():
 
 
 @bp.route("/api/sync/quickcommerce", methods=["POST"], strict_slashes=False)
-@require_api_key
 def sync_products_from_quickcommerce():
     data = get_json()
 

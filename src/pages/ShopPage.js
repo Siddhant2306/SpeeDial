@@ -33,7 +33,12 @@ const ShopPage = () => {
       try {
         const data = await getProducts();
         if (cancelled) return;
-        setProducts(Array.isArray(data) ? data : []);
+        const productsArray = Array.isArray(data) ? data : [];
+        for (let i = productsArray.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [productsArray[i], productsArray[j]] = [productsArray[j], productsArray[i]];
+        }
+        setProducts(productsArray);
       } catch (err) {
         if (cancelled) return;
         setProductsError(err?.message || "Failed to load products");
@@ -75,6 +80,52 @@ const ShopPage = () => {
   const productsById = useMemo(() => {
     return new Map(products.map((p) => [p.id, p]));
   }, [products]);
+
+  const handleAiAddToCart = (payload, maybeQuantity) => {
+    let rawNameOrId = "";
+    let quantity = 1;
+
+    if (typeof payload === "string") {
+      rawNameOrId = payload;
+      quantity = Number.parseInt(String(maybeQuantity ?? "1"), 10) || 1;
+    } else if (payload && typeof payload === "object") {
+      rawNameOrId =
+        payload.id ||
+        payload.product_id ||
+        payload.productId ||
+        payload.name ||
+        payload.item ||
+        "";
+      quantity = Number.parseInt(String(payload.quantity ?? maybeQuantity ?? "1"), 10) || 1;
+    }
+
+    const nameOrId = String(rawNameOrId || "").trim();
+    if (!nameOrId) return;
+    if (!Number.isFinite(quantity) || quantity < 1) quantity = 1;
+
+    // Prefer matching by product id; fallback to case-insensitive name match.
+    let productId = nameOrId;
+    if (!productsById.has(productId)) {
+      const normalized = nameOrId.toLowerCase();
+      const exactMatch = products.find(
+        (p) => String(p?.name || "").trim().toLowerCase() === normalized
+      );
+      const partialMatch =
+        exactMatch ||
+        (normalized.length >= 3
+          ? products.find((p) =>
+              String(p?.name || "").trim().toLowerCase().includes(normalized)
+            )
+          : null);
+
+      productId = partialMatch?.id || nameOrId;
+    }
+
+    setCart((prev) => ({
+      ...prev,
+      [productId]: (prev[productId] || 0) + quantity,
+    }));
+  };
 
   const tabs = useMemo(() => {
     const counts = new Map();
@@ -260,14 +311,16 @@ const ShopPage = () => {
       </div>
 
       <AiFab onOpen={() => setaiopen(true)}/>
-      <AiModal open={aiopen} onClose={() => setaiopen(false)} />
+      <AiModal open={aiopen} onClose={() => setaiopen(false)}
+          onAddToCart={handleAiAddToCart}
+      />
 
       <CartFab count={cartCount} onOpen={() => setCartOpen(true)} />
       <CartModal
         open={cartOpen}
         lines={cartLines}
-        cartCount={cartCount}
-        cartTotal={cartTotal}
+        cartCount={cartLines.reduce((a, b) => a + b.qty, 0)}
+        cartTotal={cartLines.reduce((a, b) => a + b.lineTotal, 0)}
         onClose={() => setCartOpen(false)}
         onRemoveLine={removeLine}
         onClearCart={clearCart}

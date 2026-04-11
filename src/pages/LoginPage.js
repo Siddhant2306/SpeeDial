@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import "../css/login.css";
 import { loginUser, registerUser } from "../api/userauth";
 import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const LoginPage = () => {
   const [mode, setMode] = useState("login");
@@ -11,8 +12,54 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const submit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const safeName = name.trim();
+    const safeEmail = email.trim().toLowerCase();
+
+    let response;
+
+    if (mode === "signup") {
+      response = await registerUser({
+        name: safeName,
+        email: safeEmail,
+        password
+      });
+    } else {
+      response = await loginUser({
+        email: safeEmail,
+        password
+      });
+    }
+
+    // 🔥 Handle both cases safely
+    const userData = response.user || response;
+
+    // 🔥 Store user_id ALWAYS
+    const userId = userData.user_id || userData.id;
+
+    if (!userId) {
+      throw new Error("user_id not found in response");
+    }
+
+    localStorage.setItem("user_id", userId);
+    localStorage.setItem("user", JSON.stringify(userData));
+
+    alert(
+      mode === "signup"
+        ? `✅ Account created (user id: ${userId})`
+        : `✅ Logged in (user id: ${userId})`
+    );
+
+    navigate("/");
+
+    setPassword("");
+
     e.preventDefault();
     setLoading(true);
 

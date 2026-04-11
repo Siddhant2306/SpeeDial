@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CartModal = ({
   open,
@@ -14,6 +15,7 @@ const CartModal = ({
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState(""); // payment method state
   const [upiId, setUpiId] = useState(""); // UPI input
+  const navigate = useNavigate();
 
   if (!open) return null;
 
@@ -39,6 +41,8 @@ const CartModal = ({
       alert("User not logged in");
       return;
     }
+
+    navigate("/order-map"); // Pass data to OrderMapPage
 
     if (onCheckout) {
       onCheckout({ address, paymentMethod, upiId, userId: userId });

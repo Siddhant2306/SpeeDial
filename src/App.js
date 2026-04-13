@@ -6,6 +6,7 @@ import AdminLoginPage from "./pages/AdminLoginPage";
 import AdminDashboard from "./pages/admin_pages/AdminDashboard";
 import HomePage from "./pages/HomePage";
 import ShopPage from "./pages/ShopPage";
+import { OrderMapPage } from "./pages/ordermappage";
 import FloatingLoginButton from "./components/FloatingLoginButton";
 import { BrowserRouter, Routes, Route, Outlet, Navigate } from "react-router-dom";
 
@@ -23,6 +24,12 @@ function App(){
     );
 
   const AdminLayout = () => (
+      <>
+        <Outlet />
+      </>
+    );
+
+  const MapLayout = () => (
       <>
         <Outlet />
       </>
@@ -47,6 +54,10 @@ function App(){
     <div className="app">
       <BrowserRouter>
         <Routes>
+
+          <Route element={<MapLayout />}>
+            <Route path="/order-map" element={<OrderMapPage />} />
+          </Route>
 
           <Route element={<UserLayout />}>
             <Route path="/" element={<HomePage />} />

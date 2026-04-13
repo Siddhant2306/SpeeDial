@@ -22,22 +22,22 @@ const LoginPage = () => {
     let response;
 
     if (mode === "signup") {
-      response = await registerUser({
+      response = await registerUser({   //Payload for registration
         name: safeName,
         email: safeEmail,
         password
       });
     } else {
-      response = await loginUser({
+      response = await loginUser({    //Payload for login
         email: safeEmail,
         password
       });
     }
 
-    // 🔥 Handle both cases safely
+    // Handle both cases safely
     const userData = response.user || response;
 
-    // 🔥 Store user_id ALWAYS
+    // Store user_id ALWAYS
     const userId = userData.user_id || userData.id;
 
     if (!userId) {

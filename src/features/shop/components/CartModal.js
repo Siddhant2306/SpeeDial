@@ -42,7 +42,15 @@ const CartModal = ({
       return;
     }
 
-    navigate("/order-map"); // Pass data to OrderMapPage
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        navigate("/order-map", { state: { latitude, longitude } }); // Pass data to OrderMapPage
+      },
+      (error) => {
+        console.error("Error getting location:", error);
+      }
+    );
 
     if (onCheckout) {
       onCheckout({ address, paymentMethod, upiId, userId: userId });

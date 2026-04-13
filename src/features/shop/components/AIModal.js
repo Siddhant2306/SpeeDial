@@ -226,62 +226,63 @@ const AIModal = ({ open, onClose, onAddToCart }) => {
           </button>
         </div>
 
-        {/* MESSAGES */}
-        <div className="aiChatMessages">
-          {messages.map((m) => (
-            <div key={m.id} className={`aiChatMessageRow ${m.role}`}>
-              {m.role === "assistant" && <div className="aiMiniAvatar"></div>}
+            {/* MESSAGES */}
+            <div className="aiChatMessages">
+              {messages.map((m) => (
+                <div key={m.id} className={`aiChatMessageRow ${m.role}`}>
+                  {m.role === "assistant" && <div className="aiMiniAvatar"></div>}
 
-              <div className={`aiChatMessage ${m.role}`}>
-                <div className="aiChatBubble">
-                  {/* Check type: case-insensitive to be safe */}
-                  {m.type?.toLowerCase() === "products" || m.type?.toLowerCase() === "cart" ? (
-                    <div className="aiProductGrid">
-                      {/* Defensive mapping: Ensure items exists and is an array */}
-                      {Array.isArray(m.items) && m.items.length > 0 ? (
-                        m.items.map((item, i) => (
-                          <div key={i} className="aiProductCard">
-                            <img
-                              src={item.image || item.image_url || "https://via.placeholder.com/50"}
-                              className="aiProductImg"
-                              alt={item.name || "product"}
-                            />
-                            {/* Fix: Check both 'name' and 'item' keys */}
-                            <div className="aiProductName">{item.name || item.item || "Unknown Product"}</div>
-                            
-                            {item.price && <div className="aiProductPrice">{item.price}</div>}
-                            {item.quantity && <div className="qty">Qty: {item.quantity}</div>}
-                          </div>
-                        ))
+                  <div className={`aiChatMessage ${m.role}`}>
+                    <div className="aiChatBubble">
+                      {m.type?.toLowerCase() === "products" || m.type?.toLowerCase() === "cart" ? (
+                        <div className="aiProductGrid">
+                          {Array.isArray(m.items) && m.items.length > 0 ? (
+                            m.items.map((item, i) => (
+                              <div key={i} className="aiProductCard">
+                                <img
+                                  src={item.image || item.image_url || "https://via.placeholder.com/80"}
+                                  className="aiProductImg"
+                                  alt={item.name || "product"}
+                                />
+
+                                <div className="aiProductInfo">
+                                  <div className="aiProductName">
+                                    {item.name || item.item || "Unknown Product"}
+                                  </div>
+
+                                  {item.price && <div className="aiProductPrice">{item.price}</div>}
+                                  {item.quantity && <div className="aiProductQty">Qty: {item.quantity}</div>}
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="aiChatText italic">No items found.</div>
+                          )}
+                        </div>
                       ) : (
-                        <div className="aiChatText italic">No items found.</div>
+                        <div className="aiChatText">{m.content || "no"}</div>
                       )}
                     </div>
-                  ) : (
-                    /* Standard text bubble fallback */
-                    <div className="aiChatText">{m.content || "no"}</div>
-                  )}
+                  </div>
                 </div>
-              </div>
-            </div>
-          ))}
+              ))}
 
-          {sending && (
-            <div className="aiChatMessageRow assistant">
-              <div className="aiMiniAvatar"></div>
+              {sending && (
+                <div className="aiChatMessageRow assistant">
+                  <div className="aiMiniAvatar"></div>
 
-              <div className="aiChatMessage assistant">
-                <div className="aiChatBubble aiTypingBubble">
-                  <span className="aiTypingDot"></span>
-                  <span className="aiTypingDot"></span>
-                  <span className="aiTypingDot"></span>
+                  <div className="aiChatMessage assistant">
+                    <div className="aiChatBubble aiTypingBubble">
+                      <span className="aiTypingDot"></span>
+                      <span className="aiTypingDot"></span>
+                      <span className="aiTypingDot"></span>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          )}
+              )}
 
-          <div ref={endRef} />
-        </div>
+              <div ref={endRef} />
+            </div>
 
         {/* ERROR */}
         {error && <div className="aiChatError">{error}</div>}

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { sendAiAgentMessage } from "../../../api/aiAgent";
 import "../../../css/AiChatUI.css";
+import {ModelViewer} from "../../../components/SpeediViwer"
 
 function makeId() {
   return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -226,94 +227,99 @@ const AIModal = ({ open, onClose, onAddToCart }) => {
           </button>
         </div>
 
-        {/* MESSAGES */}
-        <div className="aiChatMessages">
-          {messages.map((m) => (
-            <div key={m.id} className={`aiChatMessageRow ${m.role}`}>
-              {m.role === "assistant" && <div className="aiMiniAvatar"></div>}
+        <div className="aiAssistantBody">
+          <div className="aiModelPanel">
+            <div className="aiModelFrame">
+              <ModelViewer />
+            </div>
+          </div>
 
-              <div className={`aiChatMessage ${m.role}`}>
-                <div className="aiChatBubble">
-                  {/* Check type: case-insensitive to be safe */}
-                  {m.type?.toLowerCase() === "products" || m.type?.toLowerCase() === "cart" ? (
-                    <div className="aiProductGrid">
-                      {/* Defensive mapping: Ensure items exists and is an array */}
-                      {Array.isArray(m.items) && m.items.length > 0 ? (
-                        m.items.map((item, i) => (
-                          <div key={i} className="aiProductCard">
-                            <img
-                              src={item.image || item.image_url || "https://via.placeholder.com/50"}
-                              className="aiProductImg"
-                              alt={item.name || "product"}
-                            />
-                            {/* Fix: Check both 'name' and 'item' keys */}
-                            <div className="aiProductName">{item.name || item.item || "Unknown Product"}</div>
-                            
-                            {item.price && <div className="aiProductPrice">{item.price}</div>}
-                            {item.quantity && <div className="qty">Qty: {item.quantity}</div>}
-                          </div>
-                        ))
+          <div className="aiChatPanel">
+            {/* MESSAGES */}
+            <div className="aiChatMessages">
+              {messages.map((m) => (
+                <div key={m.id} className={`aiChatMessageRow ${m.role}`}>
+                  {m.role === "assistant" && <div className="aiMiniAvatar"></div>}
+
+                  <div className={`aiChatMessage ${m.role}`}>
+                    <div className="aiChatBubble">
+                      {m.type?.toLowerCase() === "products" || m.type?.toLowerCase() === "cart" ? (
+                        <div className="aiProductGrid">
+                          {Array.isArray(m.items) && m.items.length > 0 ? (
+                            m.items.map((item, i) => (
+                              <div key={i} className="aiProductCard">
+                                <img
+                                  src={item.image || item.image_url || "https://via.placeholder.com/50"}
+                                  className="aiProductImg"
+                                  alt={item.name || "product"}
+                                />
+                                <div className="aiProductName">{item.name || item.item || "Unknown Product"}</div>
+
+                                {item.price && <div className="aiProductPrice">{item.price}</div>}
+                                {item.quantity && <div className="qty">Qty: {item.quantity}</div>}
+                              </div>
+                            ))
+                          ) : (
+                            <div className="aiChatText italic">No items found.</div>
+                          )}
+                        </div>
                       ) : (
-                        <div className="aiChatText italic">No items found.</div>
+                        <div className="aiChatText">{m.content || "no"}</div>
                       )}
                     </div>
-                  ) : (
-                    /* Standard text bubble fallback */
-                    <div className="aiChatText">{m.content || "no"}</div>
-                  )}
+                  </div>
                 </div>
+              ))}
+
+              {sending && (
+                <div className="aiChatMessageRow assistant">
+                  <div className="aiMiniAvatar"></div>
+
+                  <div className="aiChatMessage assistant">
+                    <div className="aiChatBubble aiTypingBubble">
+                      <span className="aiTypingDot"></span>
+                      <span className="aiTypingDot"></span>
+                      <span className="aiTypingDot"></span>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <div ref={endRef} />
+            </div>
+
+            {/* ERROR */}
+            {error && <div className="aiChatError">{error}</div>}
+
+            {/* INPUT */}
+            <div className="aiChatComposer">
+              <textarea
+                ref={inputRef}
+                className="aiChatInput"
+                placeholder="Type a message..."
+                value={draft}
+                onChange={(e) => setDraft(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSend();
+                  }
+                }}
+                disabled={sending}
+              />
+
+              <div className="aiChatActions">
+                <button
+                  className="buy-btn"
+                  onClick={handleSend}
+                  disabled={sending || !(draft || "").trim()}
+                >
+                  Send
+                </button>
               </div>
             </div>
-          ))}
-
-          {sending && (
-            <div className="aiChatMessageRow assistant">
-              <div className="aiMiniAvatar"></div>
-
-              <div className="aiChatMessage assistant">
-                <div className="aiChatBubble aiTypingBubble">
-                  <span className="aiTypingDot"></span>
-                  <span className="aiTypingDot"></span>
-                  <span className="aiTypingDot"></span>
-                </div>
-              </div>
-            </div>
-          )}
-
-          <div ref={endRef} />
-        </div>
-
-        {/* ERROR */}
-        {error && <div className="aiChatError">{error}</div>}
-
-        {/* INPUT */}
-        <div className="aiChatComposer">
-          <textarea
-            ref={inputRef}
-            className="aiChatInput"
-            placeholder="Type a message..."
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSend();
-              }
-            }}
-            disabled={sending}
-          />
-
-          <div className="aiChatActions">
-            <button
-              className="buy-btn"
-              onClick={handleSend}
-              disabled={sending || !(draft || "").trim()}
-            >
-              Send
-            </button>
           </div>
         </div>
-
       </div>
     </div>
   );

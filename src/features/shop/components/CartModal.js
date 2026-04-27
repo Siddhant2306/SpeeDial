@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 const CartModal = ({
   open,
   lines,
   cartCount,
   cartTotal,
+  placing = false,
   onClose,
   onRemoveLine,
   onClearCart,
@@ -15,7 +15,6 @@ const CartModal = ({
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState(""); // payment method state
   const [upiId, setUpiId] = useState(""); // UPI input
-  const navigate = useNavigate();
 
   if (!open) return null;
 
@@ -42,16 +41,6 @@ const CartModal = ({
       return;
     }
 
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        navigate("/order-map", { state: { latitude, longitude } }); // Pass data to OrderMapPage
-      },
-      (error) => {
-        console.error("Error getting location:", error);
-      }
-    );
-
     if (onCheckout) {
       onCheckout({ address, paymentMethod, upiId, userId: userId });
     }
@@ -61,6 +50,7 @@ const CartModal = ({
     setPaymentMethod("");
     setUpiId("");
     setShowAddressModal(false);
+    onClose?.();
   };
 
   return (
@@ -122,6 +112,7 @@ const CartModal = ({
             <button
               className="buy-btn"
               onClick={() => setShowAddressModal(true)}
+              disabled={placing || lines.length === 0}
             >
               Order
             </button>
@@ -207,11 +198,12 @@ const CartModal = ({
               <button
                 className="buy-btn secondary"
                 onClick={() => setShowAddressModal(false)}
+                disabled={placing}
               >
                 Cancel
               </button>
 
-              <button className="buy-btn" onClick={handleConfirmOrder}>
+              <button className="buy-btn" onClick={handleConfirmOrder} disabled={placing}>
                 Confirm Order
               </button>
             </div>

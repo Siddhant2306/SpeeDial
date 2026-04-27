@@ -1,13 +1,15 @@
-import React, { useMemo, useState, useEffect} from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "../css/shop.css";
 import { placeBulkOrders } from "../api/orders";
 import { getProducts, syncQuickCommerce } from "../api/products";
 import CartFab from "../features/shop/components/CartFab";
 import CartModal from "../features/shop/components/CartModal";
+import OrderPlacingOverlay from "../features/shop/components/OrderPlacingOverlay";
 import ProductCard from "../features/shop/components/ProductCard";
 import ShopHero from "../features/shop/components/ShopHero";
 import AiFab  from "../features/shop/components/Aifab";
 import AiModal from "../features/shop/components/AIModal";
+import { useNavigate } from "react-router-dom";
 
 const ShopPage = () => {
   const [products, setProducts] = useState([]);
@@ -23,6 +25,174 @@ const ShopPage = () => {
   const [query, setQuery] = useState("");
 
   const [aiopen, setaiopen] = useState(false);
+  const cartFabRef = useRef(null);
+  const navigate = useNavigate();
+  const orderNavRef = useRef(null);
+
+  const [orderOverlayOpen, setOrderOverlayOpen] = useState(false);
+  const [placingOrder, setPlacingOrder] = useState(false);
+  const [orderDone, setOrderDone] = useState(false);
+  const [orderError, setOrderError] = useState("");
+
+  const closeOrderOverlay = useCallback(() => {
+    setOrderOverlayOpen(false);
+    setPlacingOrder(false);
+    setOrderDone(false);
+    setOrderError("");
+    orderNavRef.current = null;
+  }, []);
+
+  const handleOrderExitComplete = useCallback(() => {
+    const coords = orderNavRef.current;
+    closeOrderOverlay();
+    navigate("/order-map", coords ? { state: coords } : undefined);
+  }, [closeOrderOverlay, navigate]);
+
+  const getUserCoords = useCallback(() => {
+    return new Promise((resolve) => {
+      if (typeof navigator === "undefined" || !navigator.geolocation) {
+        resolve(null);
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          resolve({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          });
+        },
+        () => resolve(null),
+        { enableHighAccuracy: true, timeout: 9000, maximumAge: 60_000 }
+      );
+    });
+  }, []);
+
+  const flyToCart = useCallback((fromCardEl) => {
+    const toEl = cartFabRef.current;
+    if (!fromCardEl || !toEl) return;
+
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
+    const prefersReduced =
+      typeof window.matchMedia === "function" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReduced || typeof window.getComputedStyle !== "function") return;
+
+    const img = fromCardEl.querySelector?.(".product-media img") || null;
+    const fromRect = (img || fromCardEl).getBoundingClientRect();
+    const toRect = toEl.getBoundingClientRect();
+
+    if (!fromRect?.width || !fromRect?.height || !toRect?.width || !toRect?.height) return;
+
+    const ghost = document.createElement("div");
+    const src = img ? img.currentSrc || img.src : "";
+
+    ghost.setAttribute("aria-hidden", "true");
+    ghost.style.position = "fixed";
+    ghost.style.left = `${fromRect.left}px`;
+    ghost.style.top = `${fromRect.top}px`;
+    ghost.style.width = `${fromRect.width}px`;
+    ghost.style.height = `${fromRect.height}px`;
+    ghost.style.borderRadius = "16px";
+    ghost.style.overflow = "hidden";
+    ghost.style.pointerEvents = "none";
+    ghost.style.zIndex = "10001";
+    ghost.style.boxShadow = "0 30px 110px rgba(0,0,0,0.60)";
+    ghost.style.border = "1px solid rgba(255,255,255,0.14)";
+    ghost.style.background = "rgba(10,12,18,0.95)";
+    ghost.style.backdropFilter = "blur(10px)";
+    ghost.style.willChange = "transform, opacity, filter";
+
+    if (src) {
+      ghost.style.backgroundImage = `url("${src}")`;
+      ghost.style.backgroundSize = "cover";
+      ghost.style.backgroundPosition = "center";
+      ghost.style.backgroundRepeat = "no-repeat";
+    }
+
+    document.body.appendChild(ghost);
+
+    const fromCx = fromRect.left + fromRect.width / 2;
+    const fromCy = fromRect.top + fromRect.height / 2;
+    const toCx = toRect.left + toRect.width / 2;
+    const toCy = toRect.top + toRect.height / 2;
+
+    const dx = toCx - fromCx;
+    const dy = toCy - fromCy;
+
+    const cleanup = () => {
+      try {
+        ghost.remove();
+      } catch {}
+    };
+
+    try {
+      const anim = ghost.animate(
+        [
+          {
+            transform: "translate3d(0,0,0) rotate(0deg) scale(1)",
+            opacity: 0.96,
+            filter: "blur(0px)",
+          },
+          {
+            offset: 0.12,
+            transform: "translate3d(0,-18px,0) rotate(-6deg) scale(1.03)",
+            opacity: 0.96,
+            filter: "blur(0px)",
+          },
+          {
+            offset: 0.28,
+            transform: `translate3d(${dx * 0.22}px, ${dy * 0.16 - 30}px, 0) rotate(10deg) scale(0.92)`,
+            opacity: 0.88,
+            filter: "blur(0.06px)",
+          },
+          {
+            offset: 0.48,
+            transform: `translate3d(${dx * 0.48}px, ${dy * 0.44 - 16}px, 0) rotate(-12deg) scale(0.68)`,
+            opacity: 0.72,
+            filter: "blur(0.12px)",
+          },
+          {
+            offset: 0.66,
+            transform: `translate3d(${dx * 0.74}px, ${dy * 0.70 - 4}px, 0) rotate(12deg) scale(0.42)`,
+            opacity: 0.54,
+            filter: "blur(0.18px)",
+          },
+          {
+            offset: 0.86,
+            transform: `translate3d(${dx * 1.06}px, ${dy * 1.02}px, 0) rotate(-10deg) scale(0.18)`,
+            opacity: 0.18,
+            filter: "blur(0.45px)",
+          },
+          {
+            transform: `translate3d(${dx}px, ${dy}px, 0) rotate(0deg) scale(0.10)`,
+            opacity: 0.04,
+            filter: "blur(0.65px)",
+          },
+        ],
+        { duration: 1220, easing: "cubic-bezier(0.18, 1.18, 0.32, 1)", fill: "forwards" }
+      );
+      anim.addEventListener("finish", cleanup, { once: true });
+    } catch {
+      cleanup();
+    }
+
+    // Subtle cart bump.
+    try {
+      toEl.animate(
+        [
+          { transform: "scale(1)", filter: "brightness(1)" },
+          { transform: "scale(1.18)", filter: "brightness(1.16)" },
+          { transform: "scale(1)", filter: "brightness(1)" },
+        ],
+        { duration: 380, easing: "cubic-bezier(0.34, 1.56, 0.64, 1)" }
+      );
+    } catch {}
+
+    window.setTimeout(cleanup, 1400);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -223,25 +393,35 @@ const ShopPage = () => {
   }, [cartLines]);
 
   const checkout = async () => {
+    if (placingOrder) return;
+
     try {
+      setOrderOverlayOpen(true);
+      setPlacingOrder(true);
+      setOrderDone(false);
+      setOrderError("");
+      orderNavRef.current = null;
+      setCartOpen(false);
+
       const items = cartLines.map((line) => ({
         item: line.id,
         quantity: line.qty,
       }));
 
       if (items.length === 0) {
-        alert("🛒 Cart is empty");
+        setOrderError("Cart is empty.");
+        setPlacingOrder(false);
         return;
       }
 
-      const data = await placeBulkOrders({ items });
-
-      alert(`✅ Order placed! Order IDs: ${(data.order_ids || []).join(", ")}`);
+      const [coords] = await Promise.all([getUserCoords(), placeBulkOrders({ items })]);
+      orderNavRef.current = coords;
       clearCart();
-      setCartOpen(false);
+      setOrderDone(true);
     } catch (err) {
-      alert(`❌ ${err.message}`);
       console.error(err);
+      setOrderError(err?.message || "Order failed");
+      setPlacingOrder(false);
     }
   };
 
@@ -282,6 +462,7 @@ const ShopPage = () => {
                   product={p}
                   quantity={cart[p.id] || 0}
                   onChangeQuantity={changeCartQuantity}
+                  onFlyToCart={flyToCart}
                 />
               ))}
             </div>
@@ -315,16 +496,25 @@ const ShopPage = () => {
           onAddToCart={handleAiAddToCart}
       />
 
-      <CartFab count={cartCount} onOpen={() => setCartOpen(true)} />
+      <CartFab ref={cartFabRef} count={cartCount} onOpen={() => setCartOpen(true)} />
       <CartModal
         open={cartOpen}
         lines={cartLines}
-        cartCount={cartLines.reduce((a, b) => a + b.qty, 0)}
-        cartTotal={cartLines.reduce((a, b) => a + b.lineTotal, 0)}
+        cartCount={cartCount}
+        cartTotal={cartTotal}
+        placing={placingOrder}
         onClose={() => setCartOpen(false)}
         onRemoveLine={removeLine}
         onClearCart={clearCart}
         onCheckout={checkout}
+      />
+
+      <OrderPlacingOverlay
+        open={orderOverlayOpen}
+        done={orderDone}
+        error={orderError}
+        onClose={closeOrderOverlay}
+        onExitComplete={handleOrderExitComplete}
       />
     </div>
   );

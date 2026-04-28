@@ -35,14 +35,7 @@ function App(){
       </>
     );
 
-  const AdminProtectedRoute = ({ children }) => {
-    const isAdminLoggedIn = localStorage.getItem("isAdminLoggedIn");
-    if (isAdminLoggedIn === "true") {
-     return children;
-    }
 
-  return <Navigate to="/admin" replace />;
-};
 
 
   useEffect(() => {
@@ -76,9 +69,9 @@ function App(){
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminLoginPage />} />
             <Route path="dashboard" element={
-              <AdminProtectedRoute>
+ 
                 <AdminDashboard />
-              </AdminProtectedRoute>
+
             } />
           </Route>
 

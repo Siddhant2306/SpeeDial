@@ -1,5 +1,10 @@
-import React, { useState, useRef } from "react"; // ✅ CHANGED
+import React, { useRef, useState, useEffect } from "react";
 import "./AdminDashboard.css";
+
+const getTodayDate = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0];
+};
 
 const icons = {
   Home: "🏠",
@@ -17,124 +22,111 @@ const icons = {
   ChevronRight: "➡️",
 };
 
+const pageData = {
+  Dashboard: {
+    title: "Overview",
+    cards: [
+      { title: "Total Revenue", sub: "Last 30 days", value: "₹82,650", icon: "💰", change: "11%", up: true },
+      { title: "Total Order", sub: "Last 30 days", value: "1645", icon: "🛍️", change: "11%", up: true },
+      { title: "Total Customer", sub: "Last 30 days", value: "1,462", icon: "👥", change: "17%", up: false },
+      { title: "Pending Delivery", sub: "Last 30 days", value: "110", icon: "📦", change: "6%", up: true },
+    ],
+    mainTitle: "Sales Analytic",
+    summary: [
+      { label: "Income", value: "23,262.00" },
+      { label: "Expenses", value: "11,135.00" },
+      { label: "Balance", value: "48,135.00" },
+    ],
+    sideTitle: "Sales Target",
+    sideStats: [
+      { label: "Daily Target", value: "650" },
+      { label: "Monthly Target", value: "145,00" },
+    ],
+    tableTitle: "Top Selling Products",
+    tableHeaders: ["Product", "Orders", "Revenue"],
+    tableRows: [
+      ["Chips", "220", "₹6,600"],
+      ["Cold Drinks", "180", "₹7,800"],
+      ["Biscuits", "150", "₹4,500"],
+    ],
+    progressTitle: "Current Offers",
+    progress: [
+      { label: "40% Discount", value: "40%" },
+      { label: "₹100 Coupon", value: "70%" },
+      { label: "Stock Out Sell", value: "55%" },
+    ],
+  },
+};
+
+const menuItems = [
+  { label: "Dashboard", icon: icons.Home },
+  { label: "Analytics", icon: icons.BarChart3 },
+  { label: "Products", icon: icons.Package },
+  { label: "Offers", icon: icons.BadgePercent },
+  { label: "Inventory", icon: icons.Boxes },
+  { label: "Orders", icon: icons.ShoppingBag },
+  { label: "Sales", icon: icons.DollarSign },
+  { label: "Customer", icon: icons.Users },
+  { label: "Newsletter", icon: icons.Mail },
+  { label: "Settings", icon: icons.Settings },
+];
+
 const AdminDashboard = () => {
-  const [date, setDate] = useState("");        // ✅ ADDED
-  const dateInputRef = useRef(null);           // ✅ ADDED
+  const [date, setDate] = useState(getTodayDate);
+  const [activeMenu, setActiveMenu] = useState("Dashboard");
+  const dateInputRef = useRef(null);
 
-  const menuItems = [
-    { label: "Dashboard", icon: icons.Home, active: true },
-    { label: "Analytics", icon: icons.BarChart3 },
-    { label: "Products", icon: icons.Package },
-    { label: "Offers", icon: icons.BadgePercent },
-    { label: "Inventory", icon: icons.Boxes },
-    { label: "Orders", icon: icons.ShoppingBag },
-    { label: "Sales", icon: icons.DollarSign },
-    { label: "Customer", icon: icons.Users },
-    { label: "Newsletter", icon: icons.Mail },
-    { label: "Settings", icon: icons.Settings },
-  ];
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setDate(getTodayDate());
+    }, 60000);
 
-  const stats = [
-    {
-      title: "Total Revenue",
-      subtitle: "Last 30 days",
-      value: "$82,650",
-      change: "11%",
-      positive: true,
-      icon: icons.DollarSign,
-    },
-    {
-      title: "Total Order",
-      subtitle: "Last 30 days",
-      value: "1645",
-      change: "11%",
-      positive: true,
-      icon: icons.ShoppingBag,
-    },
-    {
-      title: "Total Customer",
-      subtitle: "Last 30 days",
-      value: "1,462",
-      change: "17%",
-      positive: false,
-      icon: icons.Users,
-    },
-    {
-      title: "Pending Delivery",
-      subtitle: "Last 30 days",
-      value: "110",
-      change: "6%",
-      positive: true,
-      icon: icons.Package,
-    },
-  ];
+    return () => clearInterval(interval);
+  }, []);
 
-  const products = [
-    {
-      name: "Air Jordan 8",
-      pcs: "752 Pcs",
-      image:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400",
-    },
-    {
-      name: "Air Jordan 5",
-      pcs: "752 Pcs",
-      image:
-        "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=400",
-    },
-    {
-      name: "Air Jordan 13",
-      pcs: "752 Pcs",
-      image:
-        "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400",
-    },
-    {
-      name: "Nike Air Max",
-      pcs: "752 Pcs",
-      image:
-        "https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=400",
-    },
-  ];
+  const current = pageData[activeMenu] || pageData["Dashboard"];
 
   return (
     <div className="admin-page">
       <div className="admin-shell">
+
+        {/* SIDEBAR */}
         <aside className="admin-sidebar">
           <div className="admin-logo">
             <div className="logo-mark">SD</div>
-            <div>
-              <h2>⚡SPEEDIAL</h2>
-            </div>
+            <h2>⚡ SPEEDIAL</h2>
           </div>
 
           <nav className="admin-nav">
             {menuItems.map((item) => (
               <button
                 key={item.label}
-                className={`admin-nav-item ${item.active ? "active" : ""}`}
-                type="button"
+                className={`admin-nav-item ${activeMenu === item.label ? "active" : ""}`}
+                onClick={() => setActiveMenu(item.label)}
               >
                 <span className="admin-nav-left">
-                  {item.icon}
+                  <span>{item.icon}</span>
                   <span>{item.label}</span>
                 </span>
-                {item.active && <span>{icons.ChevronRight}</span>}
+                {activeMenu === item.label && <span>{icons.ChevronRight}</span>}
               </button>
             ))}
           </nav>
         </aside>
 
+        {/* MAIN */}
         <main className="admin-main">
+
           <header className="admin-topbar">
-            <h1>Overview</h1>
+            <h1>{current.title}</h1>
 
             <div className="topbar-actions">
+
               <div className="search-box">
                 <span>{icons.Search}</span>
                 <input type="text" placeholder="Search..." />
               </div>
 
-              {/* ✅ WORKING CALENDAR */}
               <div
                 className="date-btn"
                 onClick={() => {
@@ -148,13 +140,11 @@ const AdminDashboard = () => {
                 <span>{icons.CalendarDays}</span>
 
                 <span>
-                  {date
-                    ? new Date(date).toLocaleDateString("en-GB", {
-                        day: "2-digit",
-                        month: "short",
-                        year: "numeric",
-                      })
-                    : "30 Jul 2023"}
+                  {new Date(date).toLocaleDateString("en-GB", {
+                    day: "2-digit",
+                    month: "short",
+                    year: "numeric",
+                  })}
                 </span>
 
                 <input
@@ -165,53 +155,46 @@ const AdminDashboard = () => {
                   onChange={(e) => setDate(e.target.value)}
                 />
               </div>
+
             </div>
           </header>
 
+          {/* STATS */}
           <section className="stats-grid">
-            {stats.map((item) => (
-              <div className="stat-card" key={item.title}>
+            {current.cards.map((card) => (
+              <div className="stat-card" key={card.title}>
                 <div className="stat-top">
                   <div>
-                    <h3>{item.title}</h3>
-                    <p>{item.subtitle}</p>
+                    <h3>{card.title}</h3>
+                    <p>{card.sub}</p>
                   </div>
-                  <div className="stat-icon">{item.icon}</div>
+                  <div className="stat-icon">{card.icon}</div>
                 </div>
 
                 <div className="stat-bottom">
-                  <h2>{item.value}</h2>
-                  <span className={item.positive ? "up" : "down"}>
-                    {item.positive ? "↗" : "↘"} {item.change}
+                  <h2>{card.value}</h2>
+                  <span className={card.up ? "up" : "down"}>
+                    {card.up ? "↗" : "↘"} {card.change}
                   </span>
                 </div>
               </div>
             ))}
           </section>
 
+          {/* MIDDLE */}
           <section className="middle-grid">
             <div className="panel sales-panel">
               <div className="panel-header">
-                <h2>Sales Analytic</h2>
-                <select>
-                  <option>Jul 2023</option>
-                  <option>Aug 2023</option>
-                </select>
+                <h2>{current.mainTitle}</h2>
               </div>
 
               <div className="analytic-summary">
-                <div>
-                  <p>Income</p>
-                  <h3>23,262.00</h3>
-                </div>
-                <div>
-                  <p>Expenses</p>
-                  <h3>11,135.00</h3>
-                </div>
-                <div>
-                  <p>Balance</p>
-                  <h3>48,135.00</h3>
-                </div>
+                {current.summary.map((item) => (
+                  <div key={item.label}>
+                    <p>{item.label}</p>
+                    <h3>{item.value}</h3>
+                  </div>
+                ))}
               </div>
 
               <div className="chart-area">
@@ -220,70 +203,61 @@ const AdminDashboard = () => {
             </div>
 
             <div className="panel target-panel">
-              <h2>Sales Target</h2>
-
-              <div className="target-circle">
-                <div className="target-inner">75%</div>
-              </div>
+              <h2>{current.sideTitle}</h2>
 
               <div className="target-stats">
-                <div>
-                  <p>Daily Target</p>
-                  <h3>650</h3>
-                </div>
-                <div>
-                  <p>Monthly Target</p>
-                  <h3>145,00</h3>
-                </div>
-              </div>
-            </div>
-          </section>
-
-          <section className="bottom-grid">
-            <div className="panel products-panel">
-              <div className="panel-header">
-                <h2>Top Selling Products</h2>
-                <div className="small-arrows">← →</div>
-              </div>
-
-              <div className="product-row">
-                {products.map((product) => (
-                  <div className="product-card" key={product.name}>
-                    <div className="product-image-wrap">
-                      <img src={product.image} alt={product.name} />
-                    </div>
-                    <h4>{product.name}</h4>
-                    <p>{product.pcs}</p>
+                {current.sideStats.map((item) => (
+                  <div key={item.label}>
+                    <p>{item.label}</p>
+                    <h3>{item.value}</h3>
                   </div>
                 ))}
               </div>
             </div>
+          </section>
 
-            <div className="panel offer-panel">
-              <h2>Current Offers</h2>
+          {/* BOTTOM */}
+          <section className="bottom-grid">
+            <div className="panel products-panel">
+              <h2>{current.tableTitle}</h2>
 
-              <div className="offer-item">
-                <p>40% Discount</p>
-                <div className="offer-bar">
-                  <span style={{ width: "40%" }}></span>
-                </div>
-              </div>
+              <div className="analytics-table">
+                <table>
+                  <thead>
+                    <tr>
+                      {current.tableHeaders.map((h) => (
+                        <th key={h}>{h}</th>
+                      ))}
+                    </tr>
+                  </thead>
 
-              <div className="offer-item">
-                <p>100 Taka Coupon</p>
-                <div className="offer-bar">
-                  <span style={{ width: "70%" }}></span>
-                </div>
-              </div>
-
-              <div className="offer-item">
-                <p>Stock Out Sell</p>
-                <div className="offer-bar">
-                  <span style={{ width: "55%" }}></span>
-                </div>
+                  <tbody>
+                    {current.tableRows.map((row, i) => (
+                      <tr key={i}>
+                        {row.map((col, j) => (
+                          <td key={j}>{col}</td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
+
+            <div className="panel offer-panel">
+              <h2>{current.progressTitle}</h2>
+
+              {current.progress.map((p) => (
+                <div className="offer-item" key={p.label}>
+                  <p>{p.label}</p>
+                  <div className="offer-bar">
+                    <span style={{ width: p.value }}></span>
+                  </div>
+                </div>
+              ))}
+            </div>
           </section>
+
         </main>
       </div>
     </div>

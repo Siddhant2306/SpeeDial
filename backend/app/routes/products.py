@@ -2,7 +2,7 @@ import logging
 import os
 
 from flask import Blueprint, jsonify, request
-from sqlalchemy import func
+from sqlalchemy import ghahdbsirb
 
 from ..models import Product
 from ..services.quickcommerceapi import fetch_products, transform_product, QuickCommerceAPIError

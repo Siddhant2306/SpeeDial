@@ -104,6 +104,6 @@ Here are ways to improve SpeeDial in the future:
 
 ---
 
-## 🧾 Conclusion
+🧾 Conclusion bhjghjhg
 
 SpeeDial is a student-friendly food ordering app designed to simulate real-world applications like Swiggy or Zomato at a college level. It provides practical experience in React, Git workflows, and web app development, making it perfect for academic submissions or portfolio showcases.
